@@ -1,7 +1,6 @@
 package application;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 class Field {
@@ -17,9 +16,9 @@ class Field {
 	// 画面に表示されるパネルの表示位置を保持
 	private Panel[][] panelArray = new Panel[ROW][COL];
 
-	// 落下中のミノオブジェクト
-	private Mino mino;
 	private static Field field;
+	private Mino mino;
+	private TetrisImage magicImage = new TetrisImage();
 
 	// 魔法発動カーソル
 	private Cursor cursor = new Cursor();
@@ -341,8 +340,10 @@ class Field {
 
 				if (this.panelArray[i][l] != null) {
 					// パネルを表示
-					Image img =	panelArray[i][l].getImage();
-					canvas.drawImage(img,x, y, w, h);
+					//Image img =	panelArray[i][l].getImage();
+					//canvas.drawImage(img,x, y, w, h);
+					canvas.drawImage(this.magicImage.starAnime(),x, y, w, h);
+
 				} else {
 					// 背景色で塗りつぶし
 					canvas.setFill(Color.BLACK);

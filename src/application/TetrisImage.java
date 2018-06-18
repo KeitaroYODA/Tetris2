@@ -262,6 +262,29 @@ final class TetrisImage{
 		return resizedImage[index];
 	}
 
+	// 爆発
+	public WritableImage bombAnime() {
+		WritableImage[] resizedImage = new WritableImage[3];
+		resizedImage[0] = new WritableImage(magicImg.getPixelReader(),256, 256, (int) (magicImg.getWidth() / 16), (int) (magicImg.getHeight() / 11));
+		resizedImage[1] = new WritableImage(magicImg.getPixelReader(),256, 288, (int) (magicImg.getWidth() / 16), (int) (magicImg.getHeight() / 11));
+		resizedImage[2] = new WritableImage(magicImg.getPixelReader(),256, 320, (int) (magicImg.getWidth() / 16), (int) (magicImg.getHeight() / 11));
+
+		int index;
+		if (!this.isEnd) {
+			index = this.count;
+			this.count++;
+		} else {
+			index = resizedImage.length - 1;
+		}
+
+		// アニメの再生が終わった
+		if (this.count == resizedImage.length) {
+			this.isEnd = true;
+		}
+
+		return resizedImage[index];
+	}
+
 	// 星きらめき
 	public WritableImage starAnime() {
 		WritableImage[] resizedImage = new WritableImage[8];

@@ -123,9 +123,14 @@ public class Tetris_Obj {
 
 	// 魔法実行画面表示
 	private void dispMagic() {
+		// 主人公さんのアニメが終わるまで待つ
 		if (this.hero.animeIsEnd()) {
-			this.field.movePanel(); // 魔法によって削除した行より上のパネルを落下
-			this.gameStatus = 2;
+			// 魔法の効果アニメが終わるまで待つ
+			if (this.field.getCursor().animeIsEnd()) {
+				this.magic.setMagicNum(this.magic.getMagicNum() - 1); // 魔法残弾マイナス1
+				this.field.movePanel(); // 魔法によって削除した行より上のパネルを落下
+				this.gameStatus = 2;
+			}
 		}
 	}
 
@@ -163,10 +168,7 @@ public class Tetris_Obj {
 
 		// 魔法使用
 		if (GameLib.isKeyOn("M")) {
-			int magicNum = this.magic.getMagicNum();
-			if (magicNum > 0) {
-				magicNum--;
-				this.magic.setMagicNum(magicNum);
+			if (this.magic.getMagicNum() > 0) {
 				this.gameStatus = 6;
 				return;
 			}
@@ -259,11 +261,7 @@ public class Tetris_Obj {
 		this.field.show(canvas);
 		this.magic.show(canvas);
 		this.hero.show(canvas, this.gameStatus);
-
-		// 魔法発動時のみカーソルを表示させる
-		if (this.gameStatus == 6) {
-			this.field.getCursor().show(canvas);
-		}
+		this.field.getCursor().show(canvas, this.gameStatus);
 
 		this.showNextMino(canvas);
 		this.showMessage(canvas);

@@ -36,7 +36,7 @@ public class Magic {
 		canvas.fillRect(magicX, magicY, magicW, magicH);
 
 		if (this.magicNum > 0) {
-			canvas.drawImage(this.flameImage_1.starAnime(), magicX + (Panel.panelW() * 1), magicY, 32, 32);
+			canvas.drawImage(this.flameImage_1.flameAnime(), magicX + (Panel.panelW() * 1), magicY, 32, 32);
 		}
 		if (this.magicNum > 1) {
 			canvas.drawImage(this.flameImage_2.flameAnime(), magicX + (Panel.panelW() * 3), magicY, 32, 32);
