@@ -12,12 +12,14 @@ class Cursor {
 	// カーソル表示位置を保持
 	private int[][] cursorArray = new int[ROW][COL];
 
+	// 魔法陣アニメ
+	private TetrisImage magicImage = new TetrisImage();
 
 	// 魔法発動位置選択カーソル座標
 	private int cursorX;
 	private int cursorY;
-	private double cursorW = Panel.panelW() * 2;
-	private double cursorH = Panel.panelH() * 2;
+	private double cursorW = Panel.panelW() * 3;
+	private double cursorH = Panel.panelH() * 3;
 
 	public Cursor() {
 		init();
@@ -68,7 +70,7 @@ class Cursor {
 		double y = this.cursorY * Panel.panelH() + Field.dispY();
 		double w = this.cursorW;
 		double h = this.cursorH;
-		canvas.drawImage(TetrisImage.magicCircle,x, y, w, h);
+		canvas.drawImage(this.magicImage.magicCircle(),x, y, w, h);
 	}
 
 	public int cursorX() {

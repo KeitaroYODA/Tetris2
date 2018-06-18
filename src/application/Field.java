@@ -19,11 +19,23 @@ class Field {
 
 	// 落下中のミノオブジェクト
 	private Mino mino;
+	private static Field field;
 
 	// 魔法発動カーソル
 	private Cursor cursor = new Cursor();
 
-	public Field() {
+	public static Field getInstance() {
+		if (field == null) {
+			field = new Field();
+		}
+		return field;
+	}
+
+	private Field() {
+		this.init();
+	}
+
+	public void init() {
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
 				this.panelArray[i][l] = null;
@@ -262,7 +274,6 @@ class Field {
 				}
 			}
 
-			// 空洞の行を埋める
 			if (check) {
 				for (int col = 0; col < COL; col++) {
 					this.panelArray[row][col] = null;

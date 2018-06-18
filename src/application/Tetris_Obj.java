@@ -8,29 +8,21 @@ public class Tetris_Obj {
 	private long execTime = System.nanoTime();
 	private long nanoTime = 100000000;
 
-	// アニメ表示用
-	private int heroAnimeCount = 0;
-	private boolean heroAnimeEnd = false;
-
 	// ゲーム情報
 	private int gameStatus = 0;
 	private int level = 1; // レベル
-	private int score = 0; // スコア
 	private int maxLevel = 10; // 最大レベル
-	private int maxScore = 100000;
+	private int score = 0; // スコア
+	private int maxScore = 100000; // 最大スコア
 	private int minoDownWait = 0; // ブロック落下待ち時間
 	private String message = ""; // メイン画面に表示されるメッセージ
 
-	private Mino mino; // 落下中のミノ
-	private Mino nextMino; // 次に表示されるミノ
-	private Field field; // パネル表示領域
-
 	// 画面レイアウト
 	// 得点表示
-	private static final double scoreX = Panel.panelW() * 18;
-	private static final double scoreY = Panel.panelW() * 1;
-	private static final double scoreW = Panel.panelW() * 14;
-	private static final double scoreH = Panel.panelH() * 2;
+	private final double scoreX = Panel.panelW() * 18;
+	private final double scoreY = Panel.panelW() * 1;
+	private final double scoreW = Panel.panelW() * 14;
+	private final double scoreH = Panel.panelH() * 2;
 	// 次のミノ表示
 	private final double nextX = Panel.panelW() * 18;
 	private final double nextY = Panel.panelH() * 4;
@@ -41,208 +33,222 @@ public class Tetris_Obj {
 	private final double levelY = Panel.panelH() * 4;
 	private final double levelW = Panel.panelW() * 7;
 	private final double levelH = Panel.panelH() * 2;
-	// 魔法ストック表示
-	private final double magicX = Panel.panelW() * 25;
-	private final double magicY = Panel.panelH() * 7;
-	private final double magicW = Panel.panelW() * 7;
-	private final double magicH = Panel.panelH() * 2;
-	// 主人公さん表示
-	private final double heroX = Panel.panelW() * 19;
-	private final double heroY = Panel.panelH() * 10;
-	private final double heroW = Panel.panelW() * 8;
-	private final double heroH = Panel.panelH() * 8;
 
-	private TetrisImage heroImage = new TetrisImage();
-	private TetrisImage flameImage_1 = new TetrisImage();
-	private TetrisImage flameImage_2 = new TetrisImage();
-	private TetrisImage flameImage_3 = new TetrisImage();
+	private Field field; // パネル表示領域
+	private Hero hero; // 主人公さん
+	private Magic magic; // 魔法残弾
+	private Mino nextMino; // 次に表示されるミノ
+
+	// 不要なフレームを間引く
+	private boolean isSkip() {
+		long now = System.nanoTime();
+		if (now - this.execTime < this.nanoTime) {
+			return true;
+		} else {
+			this.execTime = now;
+			return false;
+		}
+	}
+
+	// 初期化
+	private void doInit() {
+		this.gameStatus = 1;
+		this.nextMino = Mino.getMino();
+		this.field.init();
+		this.field.setMino(Mino.getMino());
+	}
+
+	// タイトル画面
+	private void dispTitle() {
+		this.message = "SMILE TETLIS";
+		if (GameLib.isKeyOn("ENTER")) {
+			this.gameStatus = 2;
+		}
+	}
+
+	// 次に落下するミノを画面上部に出現させる
+	private void dispNextMino() {
+		this.nextMino.initXY();
+		this.field.setMino(nextMino);
+		this.nextMino = Mino.getMino();
+		this.gameStatus = 2;
+
+		// 新しいミノが出現時に他パネルに接触している場合ゲームオーバ＾とする
+		if (this.field.colision()) {
+			this.gameStatus = 5;
+		}
+	}
+
+	// ゲームオーバー画面
+	private void dispGameOver() {
+		this.message = "GAME OVER!! \rPrease Press ENTER";
+		// 主人公さんのアニメ表示が終わるまで待つ
+		if (this.hero.animeIsEnd()) {
+			if (GameLib.isKeyOn("ENTER")) {
+				this.gameStatus = 0; // タイトル画面へ戻る
+			}
+		}
+	}
+
+	// ポーズ画面
+	private void dispPause() {
+		this.message = "Pause Prease Press E";
+		if (GameLib.isKeyOn("E")) {
+			this.gameStatus = 2; // ゲーム再開
+		}
+	}
+
+	// 魔法陣カーソル表示画面
+	private void dispMagicCursor() {
+		this.message = "魔法を発動させたい場所を選択して ENTER \rやめる場合は L";
+
+		// キー操作によってカーソルを移動させる
+		if (GameLib.isKeyOn("W")) {
+			this.field.getCursor().moveUp(); // カーソルを上に移動
+		} else if (GameLib.isKeyOn("X")) {
+			this.field.getCursor().moveDown(); // カーソルを下に移動
+		} else if (GameLib.isKeyOn("A")) {
+			this.field.getCursor().moveLeft(); // カーソルを左に移動
+		} else if (GameLib.isKeyOn("D")) {
+			this.field.getCursor().moveRight(); // カーソルを右に移動
+		}
+
+		if (GameLib.isKeyOn("ENTER")) {
+			this.gameStatus = 7; // 魔法発動
+			this.field.deletePanel();
+		} else if (GameLib.isKeyOn("L")) {
+			this.gameStatus = 2; // 魔法発動解除
+		}
+	}
+
+	// 魔法実行画面表示
+	private void dispMagic() {
+		if (this.hero.animeIsEnd()) {
+			this.field.movePanel(); // 魔法によって削除した行より上のパネルを落下
+			this.gameStatus = 2;
+		}
+	}
+
+	// 揃った行の削除画面
+	private void dispDeleteRow() {
+		// 主人公さんのアニメ表示が終わるまで待つ
+		if (this.hero.animeIsEnd()) {
+			this.field.moveRow();
+			this.gameStatus = 3;
+		}
+	}
+
+	private void dispGameMain() {
+		this.message = "";
+		if (GameLib.isKeyOn("P")) {
+			this.gameStatus = 4; // ポーズ
+			return;
+		}
+
+		// ミノ操作
+		boolean isKeyOn = false;
+		if (GameLib.isKeyOn("L")) {
+			isKeyOn = true;
+			this.field.turnLeft(); // 左回転
+		} else if (GameLib.isKeyOn("D")) {
+			isKeyOn = true;
+			this.field.moveRight(); // 右へ移動
+		} else if (GameLib.isKeyOn("A")) {
+			isKeyOn = true;
+			this.field.moveLeft(); // 左へ移動
+		} else if (GameLib.isKeyOn("X")) {
+			isKeyOn = true;
+			this.field.moveDown(); // 落下
+		}
+
+		// 魔法使用
+		if (GameLib.isKeyOn("M")) {
+			int magicNum = this.magic.getMagicNum();
+			if (magicNum > 0) {
+				magicNum--;
+				this.magic.setMagicNum(magicNum);
+				this.gameStatus = 6;
+				return;
+			}
+		}
+
+		// キーが押下されている間は落下しない
+		// 現在のレベルに応じて落下のタイミングを変更する
+		if (!isKeyOn && (minoDownWait > (this.maxLevel - this.level))) {
+			this.minoDownWait = 0;
+			this.field.moveDown();
+		}
+		this.minoDownWait++;
+	}
+
+	// 衝突判定をおこなう。行が揃っていれば削除する
+	private void colision() {
+		// ミノが床またはパネルに接地した
+		if (this.field.colision()) {
+			// ミノのパネル情報をフィールドにセット
+			this.field.setMino2Field();
+			// 行が揃っていれば削除
+			int checkNum = this.field.checkRemoveRow();
+			if (checkNum > 0) {
+				this.field.deleteRow();
+				this.updateScore(checkNum);
+				this.gameStatus = 8;
+			} else {
+				this.gameStatus = 3;
+			}
+		}
+	}
+
+	// スコアとレベルを更新する
+	private void updateScore(int deleteRow) {
+		// スコアを加算
+		if (this.score <= this.maxScore) {
+			this.score = this.score + (deleteRow * 100);
+		}
+		// スコア3000点毎にレベルアップ
+		this.level = (this.score / 3000) + 1;
+	}
 
 	// このメソッドが1秒間に60回ぐらい呼ばれるので
 	// テトリスの内部処理をここに書く
 	public void update() {
-
-		// 不要なフレームを間引く
-		long now = System.nanoTime();
-		if (now - execTime < nanoTime) {
+		if (this.isSkip()) {
 			return;
 		}
-		this.execTime = now;
+		this.hero = Hero.getInstance();
+		this.magic = Magic.getInstance();
+		this.field = Field.getInstance();
 
 		switch(this.gameStatus) {
 		case 0: // 画面の初期化
-			this.gameStatus = 1;
-			this.field = new Field();
-			this.nextMino = Mino.getMino();
-			this.field.setMino(Mino.getMino());
-			this.heroImage.init();
+			this.doInit();
 			break;
-
 		case 1: // タイトル画面
-			this.message = "SMILE TETLIS";
-			if (GameLib.isKeyOn("ENTER")) {
-				this.heroAnimeCount = 0;
-				this.gameStatus = 2;
-			}
+			this.dispTitle();
 			break;
-
 		case 2: // ゲーム画面
-			this.message = "";
-
-			if (GameLib.isKeyOn("P")) {
-				this.heroAnimeCount = 0;
-				this.gameStatus = 4; // ポーズ
-				return;
-			}
-
-			boolean isKeyOn = false;
-			if (GameLib.isKeyOn("L")) {
-				isKeyOn = true;
-				this.field.turnLeft(); // 左回転
-			} else if (GameLib.isKeyOn("D")) {
-				isKeyOn = true;
-				this.field.moveRight(); // 右へ移動
-			} else if (GameLib.isKeyOn("A")) {
-				isKeyOn = true;
-				this.field.moveLeft(); // 左へ移動
-			} else if (GameLib.isKeyOn("X")) {
-				isKeyOn = true;
-				this.field.moveDown(); // 落下
-			}
-
-			// 魔法使用
-			if (GameLib.isKeyOn("M")) {
-				this.heroAnimeCount = 0;
-				this.gameStatus = 6;
-				return;
-			} else if (GameLib.isKeyOn("I")) {
-				// これから実装
-			}
-
-			// キーが押下されている間は落下しない
-			// 現在のレベルに応じて落下のタイミングを変更する
-			if (!isKeyOn && (minoDownWait > (this.maxLevel - this.level))) {
-				this.minoDownWait = 0;
-				this.field.moveDown();
-			}
-			this.minoDownWait++;
-
-			// ミノが床またはパネルに接地した
-			if (this.field.colision()) {
-
-				// ミノのパネル情報をフィールドにセット
-				this.field.setMino2Field();
-				this.gameStatus = 3;
-
-				// 行が揃っていれば削除
-				int checkNum = this.field.checkRemoveRow();
-				if (checkNum > 0) {
-					this.field.deleteRow();
-					// スコアを加算
-					if (this.score <= this.maxScore) {
-						this.score = this.score + (checkNum * 100);
-					}
-					// スコア3000点毎にレベルアップ
-					this.level = (this.score / 3000) + 1;
-
-					this.heroAnimeCount = 0;
-					this.heroAnimeEnd = false;
-					this.gameStatus = 8;
-				}
-			}
+			this.dispGameMain();
+			this.colision();
 			break;
-
 		case 3: // 新しいミノを出現させる
-			nextMino.initXY();
-			this.field.setMino(nextMino);
-			this.nextMino = Mino.getMino();
-			this.gameStatus = 2;
-
-			// 新しいミノが出現時に他パネルに接触している場合ゲームオーバ＾とする
-			if (this.field.colision()) {
-				this.gameStatus = 5;
-				this.heroAnimeCount = 0;
-			}
+			this.dispNextMino();
 			break;
-
 		case 4: // ポーズ画面
-			this.message = "Pause Prease Press E";
-			if (GameLib.isKeyOn("E")) {
-				// ゲーム再開
-				this.gameStatus = 2;
-			}
+			this.dispPause();
 			break;
-
 		case 5: // ゲームオーバ画面
-			this.message = "GAME OVER!! \rPrease Press ENTER";
-			if (GameLib.isKeyOn("ENTER")) {
-				// ゲーム再開
-				this.gameStatus = 0;
-			}
+			this.dispGameOver();
 			break;
-
 		case 6: // 魔法カーソル選択画面
-			this.gameStatus = 6;
-			this.message = "魔法を発動させたい場所を選択して ENTER \rやめる場合は L";
-
-			// キー操作によってカーソルを移動させる
-			if (GameLib.isKeyOn("W")) {
-				// カーソルを上に移動
-				this.field.getCursor().moveUp();
-			} else if (GameLib.isKeyOn("X")) {
-				// カーソルを下に移動
-				this.field.getCursor().moveDown();
-			} else if (GameLib.isKeyOn("A")) {
-				// カーソルを左に移動
-				this.field.getCursor().moveLeft();
-			} else if (GameLib.isKeyOn("D")) {
-				// カーソルを右に移動
-				this.field.getCursor().moveRight();
-			}
-
-			if (GameLib.isKeyOn("ENTER")) {
-				// 魔法発動
-				this.field.deletePanel();
-				this.heroAnimeCount = 0;
-				this.heroAnimeEnd = false;
-				this.gameStatus = 7;
-				this.heroImage.init();
-
-			} else if (GameLib.isKeyOn("L")) {
-				// 魔法発動解除
-				this.gameStatus = 2;
-			}
+			this.dispMagicCursor();
 			break;
-
 		case 7: // 魔法発動画面（アニメーション）
-			// 主人公さんの魔法モーション終了まで待つ
-			/*
-			if (this.heroAnimeEnd) {
-				this.heroAnimeEnd = false;
-				this.heroAnimeCount = 0;
-				this.field.movePanel();
-				this.gameStatus = 2;
-			}
-			*/
-
-			if (this.heroImage.isEnd()) {
-				this.heroAnimeEnd = false;
-				this.heroAnimeCount = 0;
-				this.field.movePanel();
-				this.gameStatus = 2;
-			}
+			this.dispMagic();
 			break;
-
 		case 8: // ミノが１行削除された
-			// 揃っている行があるかチェック。揃っていた場合その行のパネルを削除する
-			// 主人公さんのモーション表示が終わるまで待つ
-			// （TODO　6/14）削除された行にエフェクトを追加する
-			if (this.heroAnimeEnd) {
-				this.field.moveRow();
-				this.gameStatus = 3;
-			}
+			this.dispDeleteRow();
 			break;
 		}
-
 		this.show();
 	}
 
@@ -251,6 +257,8 @@ public class Tetris_Obj {
 		GraphicsContext canvas = GameLib.getGC();
 		this.showBackground(canvas);
 		this.field.show(canvas);
+		this.magic.show(canvas);
+		this.hero.show(canvas, this.gameStatus);
 
 		// 魔法発動時のみカーソルを表示させる
 		if (this.gameStatus == 6) {
@@ -261,10 +269,9 @@ public class Tetris_Obj {
 		this.showMessage(canvas);
 		this.showScore(canvas);
 		this.showLevel(canvas);
-		this.showMagic(canvas);
-		this.showHero(canvas);
 	}
 
+	// 背景の表示
 	private void showBackground(GraphicsContext canvas) {
 		int col = GameLib.width() / (int) Panel.panelW();
 		int row = GameLib.height() / (int) Panel.panelH();
@@ -276,78 +283,6 @@ public class Tetris_Obj {
 				y = l * (int) Panel.panelH();
 				canvas.drawImage(TetrisImage.haikei, x, y, Panel.panelW(), Panel.panelH());
 			}
-		}
-	}
-
-	// 主人公さん表示
-	// （TODO）キー＾操作時にキャラクタをアニメーションさせる
-	private void showHero(GraphicsContext canvas) {
-		// 背景の表示
-		canvas.drawImage(TetrisImage.haikeiHeroImg, heroX, heroY, (heroH / 3) * 4, heroH);
-
-		// 主人公さんの表示切替
-		switch(this.gameStatus) {
-		case 1: // スタート画面（繰り返し）
-			/*
-			if (this.heroAnimeCount >= TetrisImage.heroAnime_1().length) {
-				this.heroAnimeCount = 0;
-			}
-			canvas.drawImage(TetrisImage.heroAnime_1()[this.heroAnimeCount], heroX + 40, heroY, heroW, heroH);
-			this.heroAnimeCount++;
-			*/
-			canvas.drawImage(this.heroImage.heroAnime(), heroX + 40, heroY, heroW, heroH);
-			break;
-
-		case 4: // ポーズ（繰り返し）
-			if (this.heroAnimeCount >= TetrisImage.heroAnime_1().length) {
-				this.heroAnimeCount = 0;
-			}
-			canvas.drawImage(TetrisImage.heroAnime_1()[this.heroAnimeCount], heroX + 40, heroY, heroW, heroH);
-			this.heroAnimeCount++;
-			break;
-		case 8: // ブロックが１行揃った
-			canvas.drawImage(TetrisImage.heroAnime_9()[this.heroAnimeCount], heroX + 40, heroY, heroW, heroH);
-			this.heroAnimeCount++;
-			if (this.heroAnimeCount >= TetrisImage.heroAnime_9().length) {
-				this.heroAnimeEnd = true; // モーションの表示が終わった
-			}
-			break;
-
-		case 5: // ゲームオーバー
-			canvas.drawImage(TetrisImage.heroAnime_6()[this.heroAnimeCount], heroX + 40, heroY, heroW, heroH);
-			this.heroAnimeCount++;
-			if (this.heroAnimeCount >= TetrisImage.heroAnime_6().length) {
-				this.heroAnimeCount = TetrisImage.heroAnime_6().length - 1;
-			}
-			break;
-		case 6: // 魔法準備中（繰り返し）
-			if (this.heroAnimeCount >= TetrisImage.heroAnime_8().length) {
-				this.heroAnimeCount = 0;
-			}
-			canvas.drawImage(TetrisImage.heroAnime_8()[this.heroAnimeCount], heroX + 40, heroY, heroW, heroH);
-			this.heroAnimeCount++;
-			break;
-
-		case 7: // 魔法発動モーション
-			/*
-			canvas.drawImage(TetrisImage.heroAnime_4()[this.heroAnimeCount], heroX + 40, heroY, heroW, heroH);
-			this.heroAnimeCount++;
-			if (this.heroAnimeCount >= TetrisImage.heroAnime_4().length) {
-				this.heroAnimeEnd = true; // モーションの表示が終わった
-			}
-			*/
-			canvas.drawImage(heroImage.heroAnime_4(), heroX + 40, heroY, heroW, heroH);
-
-			break;
-
-		default: // 通常モーション（繰り返し）
-			if (this.heroAnimeCount >= TetrisImage.heroAnime_7().length) {
-				this.heroAnimeCount = 0;
-			}
-			canvas.drawImage(TetrisImage.heroAnime_7()[this.heroAnimeCount], heroX + 40, heroY, heroW, heroH);
-			this.heroAnimeCount++;
-
-			break;
 		}
 	}
 
@@ -380,15 +315,5 @@ public class Tetris_Obj {
 		canvas.fillRect(levelX, levelY, levelW, levelH);
 		canvas.setFill(Color.WHITE);
 		canvas.fillText("LV：" + this.level, levelX + Panel.panelW(), levelY + Panel.panelW());
-	}
-
-	// 魔法のストック表示
-	private void showMagic(GraphicsContext canvas) {
-		canvas.setFill(Color.BLACK);
-		canvas.fillRect(magicX, magicY, magicW, magicH);
-		//canvas.drawImage(TetrisImage.flameAnime(), magicX + (Panel.panelW() * 1), magicY, 32, 32);
-		canvas.drawImage(this.flameImage_1.flameAnime(), magicX + (Panel.panelW() * 1), magicY, 32, 32);
-		canvas.drawImage(this.flameImage_2.flameAnime(), magicX + (Panel.panelW() * 3), magicY, 32, 32);
-		canvas.drawImage(this.flameImage_3.flameAnime(), magicX + (Panel.panelW() * 5), magicY, 32, 32);
 	}
 }
