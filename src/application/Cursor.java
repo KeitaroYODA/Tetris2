@@ -27,7 +27,7 @@ class Cursor {
 
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
-				this.cursorArray[i][l] = 0;
+				this.cursorArray[i][l] = 1;
 			}
 		}
 	}
@@ -71,6 +71,8 @@ class Cursor {
 
 	// カーソルを表示
 	public void show(GraphicsContext canvas, int gameStatus) {
+
+		// 画面によって表示を変える
 		if (this.crtGameStatus != gameStatus) {
 			this.crtGameStatus = gameStatus;
 			this.magicImage.init();
@@ -91,11 +93,23 @@ class Cursor {
 		}
 	}
 
+	public int[][] getCursorArray() {
+		return this.cursorArray;
+	}
+
 	public int cursorX() {
 		return this.cursorX;
 	}
 
 	public int cursorY() {
 		return this.cursorY;
+	}
+
+	public static int ROW() {
+		return ROW;
+	}
+
+	public static int COL() {
+		return COL;
 	}
 }

@@ -28,6 +28,7 @@ final class TetrisImage{
 	// 画像ファイル
 	static Image minoImg = new Image(new File("tile_1.png").toURI().toString());
 	static Image magicImg = new Image(new File("tile_1.png").toURI().toString());
+	static Image magicImg2 = new Image(new File("magic1.png").toURI().toString());
 	static Image heroImg = new Image(new File("hero.png").toURI().toString());
 	static Image haikeiHeroImg = new Image(new File("haikei_hero.jpg").toURI().toString());
 
@@ -101,6 +102,11 @@ final class TetrisImage{
 		if (this.count >= resizedImage.length) {
 			this.count = 0;
 		}
+
+		if (index == 0) {
+			TetrisAudio.charge();
+		}
+
 		return resizedImage[index];
 	}
 
@@ -125,6 +131,10 @@ final class TetrisImage{
 		// アニメの再生が終わった
 		if (this.count == resizedImage.length) {
 			this.isEnd = true;
+		}
+
+		if (index == 0) {
+			TetrisAudio.success();
 		}
 
 		return resizedImage[index];
@@ -262,12 +272,24 @@ final class TetrisImage{
 		return resizedImage[index];
 	}
 
-	// 爆発
+	// 魔法炸裂
 	public WritableImage bombAnime() {
-		WritableImage[] resizedImage = new WritableImage[3];
-		resizedImage[0] = new WritableImage(magicImg.getPixelReader(),256, 256, (int) (magicImg.getWidth() / 16), (int) (magicImg.getHeight() / 11));
-		resizedImage[1] = new WritableImage(magicImg.getPixelReader(),256, 288, (int) (magicImg.getWidth() / 16), (int) (magicImg.getHeight() / 11));
-		resizedImage[2] = new WritableImage(magicImg.getPixelReader(),256, 320, (int) (magicImg.getWidth() / 16), (int) (magicImg.getHeight() / 11));
+		WritableImage[] resizedImage = new WritableImage[15];
+		resizedImage[0] = new WritableImage(magicImg2.getPixelReader(),288, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[1] = new WritableImage(magicImg2.getPixelReader(),384, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[2] = new WritableImage(magicImg2.getPixelReader(),480, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[3] = new WritableImage(magicImg2.getPixelReader(),288, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[4] = new WritableImage(magicImg2.getPixelReader(),384, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[5] = new WritableImage(magicImg2.getPixelReader(),480, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[6] = new WritableImage(magicImg2.getPixelReader(),0, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[7] = new WritableImage(magicImg2.getPixelReader(),96, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[8] = new WritableImage(magicImg2.getPixelReader(),192, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[9] = new WritableImage(magicImg2.getPixelReader(),0, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[10] = new WritableImage(magicImg2.getPixelReader(),96, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[11] = new WritableImage(magicImg2.getPixelReader(),192, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[12] = new WritableImage(magicImg2.getPixelReader(),0, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[13] = new WritableImage(magicImg2.getPixelReader(),96, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
+		resizedImage[14] = new WritableImage(magicImg2.getPixelReader(),192, 288, (int) (magicImg2.getWidth() / 6), (int) (magicImg2.getHeight() / 4));
 
 		int index;
 		if (!this.isEnd) {
@@ -280,6 +302,11 @@ final class TetrisImage{
 		// アニメの再生が終わった
 		if (this.count == resizedImage.length) {
 			this.isEnd = true;
+		}
+
+		// 音を鳴らす
+		if (index == 6) {
+			TetrisAudio.bomb();
 		}
 
 		return resizedImage[index];

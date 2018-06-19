@@ -1,6 +1,9 @@
 package application;
 
+import java.io.File;
+
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.media.AudioClip;
 
 public class Hero {
 
@@ -16,6 +19,15 @@ public class Hero {
 	private static final double heroW = Panel.panelW() * 8;
 	private static final double heroH = Panel.panelH() * 8;
 
+	public static AudioClip magicAudio;
+
+	static {
+		magicAudio = new AudioClip(new File("magic-flame2.mp3").toURI().toString());
+		magicAudio.setVolume(0);
+		magicAudio.play();
+		magicAudio.setVolume(1.0);
+	}
+
 	// 主人公さんクラスのインスタンスを返す
 	public static Hero getInstance() {
 		if (hero == null) {
@@ -28,6 +40,10 @@ public class Hero {
 		// new によるインスタンス化を許可しない
 	}
 
+	public TetrisImage getImage() {
+		return this.heroImage;
+	}
+
 	public boolean animeIsEnd() {
 		return heroImage.isEnd();
 	}
@@ -38,6 +54,10 @@ public class Hero {
 		if (crtGameStatus != gameStatus) {
 			crtGameStatus = gameStatus;
 			heroImage.init();
+
+			if (gameStatus == 7) {
+				magicAudio.play();
+			}
 		}
 
 		// 背景の表示

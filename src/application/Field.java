@@ -227,9 +227,13 @@ class Field {
 	// パネル１枚を削除する。魔法実行時に呼び出される
 	public void deletePanel() {
 		int row, col;
-		row = this.cursor.cursorY();
-		col = this.cursor.cursorX();
-		this.panelArray[row][col] = null;
+		for (int i = 0; i < Cursor.ROW(); i++) {
+			for (int l = 0; l < Cursor.COL(); l++) {
+				row = this.cursor.cursorY() + i;
+				col = this.cursor.cursorX() + l;
+				this.panelArray[row][col] = null;
+			}
+		}
 	}
 
 	// 床またはパネルに衝突するまでパネルを落下させる
@@ -327,7 +331,9 @@ class Field {
 	}
 
 	// フィールドを表示
-	public void show(GraphicsContext canvas) {
+	public void show(GraphicsContext canvas, int gameStatus) {
+
+		int[][] cursorArray = this.cursor.getCursorArray();
 
 		// 背景及び積み上げられたパネルを表示
 		for (int i = 0; i < ROW; i++) {
@@ -340,9 +346,13 @@ class Field {
 
 				if (this.panelArray[i][l] != null) {
 					// パネルを表示
-					//Image img =	panelArray[i][l].getImage();
-					//canvas.drawImage(img,x, y, w, h);
-					canvas.drawImage(this.magicImage.starAnime(),x, y, w, h);
+					if (gameStatus == 6) {
+						canvas.setGlobalAlpha(0.5);
+						canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
+						canvas.setGlobalAlpha(1.0);
+					} else {
+						canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
+					}
 
 				} else {
 					// 背景色で塗りつぶし
@@ -351,6 +361,27 @@ class Field {
 				}
 			}
 		}
+
+		/*
+		// 魔法対象パネル以外は半透明表示
+		for (int k = 0; k < Cursor.ROW(); k++) {
+			for (int m = 0; m < Cursor.COL(); m++) {
+				int row = this.cursor.cursorY() + k;
+				int col = this.cursor.cursorX() + m;
+
+				double x = m * Panel.panelW() + Field.dispX;
+				double y = k * Panel.panelH() + Field.dispY;
+				double w = Panel.panelW();
+				double h = Panel.panelH();
+
+				if (this.panelArray[row][col] != null) {
+					canvas.setGlobalAlpha(0.5);
+					canvas.drawImage(panelArray[row][col].getImage(),x, y, w, h);
+					canvas.setGlobalAlpha(1.0);
+				}
+			}
+		}
+		*/
 
 		// 落下中のミノを表示
 		this.mino.show(canvas);

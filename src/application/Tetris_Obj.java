@@ -2,7 +2,21 @@ package application;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 public class Tetris_Obj {
+
+	private static final int GAME_INIT = 0;
+	private static final int GAME_MENU = 1;
+	private static final int GAME_MAIN = 2;
+	private static final int GAME_MINO_CREATE = 3;
+	private static final int GAME_PAUSE = 4;
+	private static final int GAME_OVER = 5;
+	private static final int GAME_MAGIC_SELECT = 6;
+	private static final int GAME_MAGIC_EXEC = 7;
+	private static final int GAME_MINO_DELETE = 8;
+
+
 
 	// フレーム間引き
 	private long execTime = System.nanoTime();
@@ -10,6 +24,7 @@ public class Tetris_Obj {
 
 	// ゲーム情報
 	private int gameStatus = 0;
+	private int crtGameStatus = 0;
 	private int level = 1; // レベル
 	private int maxLevel = 10; // 最大レベル
 	private int score = 0; // スコア
@@ -52,7 +67,7 @@ public class Tetris_Obj {
 
 	// 初期化
 	private void doInit() {
-		this.gameStatus = 1;
+		this.gameStatus = GAME_MENU;
 		this.nextMino = Mino.getMino();
 		this.field.init();
 		this.field.setMino(Mino.getMino());
@@ -60,9 +75,11 @@ public class Tetris_Obj {
 
 	// タイトル画面
 	private void dispTitle() {
-		this.message = "SMILE TETLIS";
+		this.message = "SMILE TETLIS \rPlease Press ENTER!";
 		if (GameLib.isKeyOn("ENTER")) {
-			this.gameStatus = 2;
+			TetrisAudio.start();
+			TetrisAudio.bgm();
+			this.gameStatus = GAME_MAIN;
 		}
 	}
 
@@ -71,21 +88,23 @@ public class Tetris_Obj {
 		this.nextMino.initXY();
 		this.field.setMino(nextMino);
 		this.nextMino = Mino.getMino();
-		this.gameStatus = 2;
+		this.gameStatus = GAME_MAIN;
 
 		// 新しいミノが出現時に他パネルに接触している場合ゲームオーバ＾とする
 		if (this.field.colision()) {
-			this.gameStatus = 5;
+			TetrisAudio.gameOver();
+			this.gameStatus = GAME_OVER;
 		}
 	}
 
 	// ゲームオーバー画面
 	private void dispGameOver() {
 		this.message = "GAME OVER!! \rPrease Press ENTER";
+
 		// 主人公さんのアニメ表示が終わるまで待つ
 		if (this.hero.animeIsEnd()) {
 			if (GameLib.isKeyOn("ENTER")) {
-				this.gameStatus = 0; // タイトル画面へ戻る
+				this.gameStatus = GAME_INIT; // タイトル画面へ戻る
 			}
 		}
 	}
@@ -94,13 +113,13 @@ public class Tetris_Obj {
 	private void dispPause() {
 		this.message = "Pause Prease Press E";
 		if (GameLib.isKeyOn("E")) {
-			this.gameStatus = 2; // ゲーム再開
+			this.gameStatus = GAME_MAIN; // ゲーム再開
 		}
 	}
 
 	// 魔法陣カーソル表示画面
 	private void dispMagicCursor() {
-		this.message = "魔法を発動させたい場所を選択して ENTER \rやめる場合は L";
+		this.message = "魔法を発動: ENTER \r中止: L";
 
 		// キー操作によってカーソルを移動させる
 		if (GameLib.isKeyOn("W")) {
@@ -114,10 +133,10 @@ public class Tetris_Obj {
 		}
 
 		if (GameLib.isKeyOn("ENTER")) {
-			this.gameStatus = 7; // 魔法発動
+			this.gameStatus = GAME_MAGIC_EXEC; // 魔法発動
 			this.field.deletePanel();
 		} else if (GameLib.isKeyOn("L")) {
-			this.gameStatus = 2; // 魔法発動解除
+			this.gameStatus = GAME_MAIN; // 魔法発動解除
 		}
 	}
 
@@ -129,7 +148,7 @@ public class Tetris_Obj {
 			if (this.field.getCursor().animeIsEnd()) {
 				this.magic.setMagicNum(this.magic.getMagicNum() - 1); // 魔法残弾マイナス1
 				this.field.movePanel(); // 魔法によって削除した行より上のパネルを落下
-				this.gameStatus = 2;
+				this.gameStatus = GAME_MAIN;
 			}
 		}
 	}
@@ -139,14 +158,15 @@ public class Tetris_Obj {
 		// 主人公さんのアニメ表示が終わるまで待つ
 		if (this.hero.animeIsEnd()) {
 			this.field.moveRow();
-			this.gameStatus = 3;
+			this.gameStatus = GAME_MINO_CREATE;
 		}
 	}
 
 	private void dispGameMain() {
 		this.message = "";
 		if (GameLib.isKeyOn("P")) {
-			this.gameStatus = 4; // ポーズ
+			TetrisAudio.pause();
+			this.gameStatus = GAME_PAUSE; // ポーズ
 			return;
 		}
 
@@ -154,6 +174,7 @@ public class Tetris_Obj {
 		boolean isKeyOn = false;
 		if (GameLib.isKeyOn("L")) {
 			isKeyOn = true;
+			TetrisAudio.turn();
 			this.field.turnLeft(); // 左回転
 		} else if (GameLib.isKeyOn("D")) {
 			isKeyOn = true;
@@ -169,7 +190,7 @@ public class Tetris_Obj {
 		// 魔法使用
 		if (GameLib.isKeyOn("M")) {
 			if (this.magic.getMagicNum() > 0) {
-				this.gameStatus = 6;
+				this.gameStatus = GAME_MAGIC_SELECT;
 				return;
 			}
 		}
@@ -187,16 +208,19 @@ public class Tetris_Obj {
 	private void colision() {
 		// ミノが床またはパネルに接地した
 		if (this.field.colision()) {
+			TetrisAudio.colision();
+
 			// ミノのパネル情報をフィールドにセット
 			this.field.setMino2Field();
 			// 行が揃っていれば削除
 			int checkNum = this.field.checkRemoveRow();
 			if (checkNum > 0) {
+				TetrisAudio.levelUp();
 				this.field.deleteRow();
 				this.updateScore(checkNum);
-				this.gameStatus = 8;
+				this.gameStatus = GAME_MINO_DELETE;
 			} else {
-				this.gameStatus = 3;
+				this.gameStatus = GAME_MINO_CREATE;
 			}
 		}
 	}
@@ -222,32 +246,32 @@ public class Tetris_Obj {
 		this.field = Field.getInstance();
 
 		switch(this.gameStatus) {
-		case 0: // 画面の初期化
+		case GAME_INIT: // 画面の初期化
 			this.doInit();
 			break;
-		case 1: // タイトル画面
+		case GAME_MENU: // タイトル画面
 			this.dispTitle();
 			break;
-		case 2: // ゲーム画面
+		case GAME_MAIN: // ゲーム画面
 			this.dispGameMain();
 			this.colision();
 			break;
-		case 3: // 新しいミノを出現させる
+		case GAME_MINO_CREATE: // 新しいミノを出現させる
 			this.dispNextMino();
 			break;
-		case 4: // ポーズ画面
+		case GAME_PAUSE: // ポーズ画面
 			this.dispPause();
 			break;
-		case 5: // ゲームオーバ画面
+		case GAME_OVER: // ゲームオーバ画面
 			this.dispGameOver();
 			break;
-		case 6: // 魔法カーソル選択画面
+		case GAME_MAGIC_SELECT: // 魔法カーソル選択画面
 			this.dispMagicCursor();
 			break;
-		case 7: // 魔法発動画面（アニメーション）
+		case GAME_MAGIC_EXEC: // 魔法発動画面（アニメーション）
 			this.dispMagic();
 			break;
-		case 8: // ミノが１行削除された
+		case GAME_MINO_DELETE: // ミノが１行削除された
 			this.dispDeleteRow();
 			break;
 		}
@@ -255,14 +279,22 @@ public class Tetris_Obj {
 	}
 
 	// 画面表示
+	// 与えるな命じよの原則に反している。。。
 	private void show() {
-		GraphicsContext canvas = GameLib.getGC();
-		this.showBackground(canvas);
-		this.field.show(canvas);
-		this.magic.show(canvas);
-		this.hero.show(canvas, this.gameStatus);
-		this.field.getCursor().show(canvas, this.gameStatus);
+		/*
+		if (this.crtGameStatus != this.gameStatus) {
+			this.crtGameStatus = this.gameStatus;
+			// アニメカウントクリア
+			this.hero.getImage().init();
+		}
+		*/
 
+		GraphicsContext canvas = GameLib.getGC();
+		this.showBackground(canvas); // 背景
+		this.field.show(canvas, this.gameStatus); // ゲーム画面
+		this.hero.show(canvas, this.gameStatus); // 主人公さん
+		this.field.getCursor().show(canvas, this.gameStatus); // 魔法陣
+		this.magic.show(canvas); // 魔法残数
 		this.showNextMino(canvas);
 		this.showMessage(canvas);
 		this.showScore(canvas);
@@ -287,7 +319,9 @@ public class Tetris_Obj {
 	// メッセージの表示
 	private void showMessage(GraphicsContext canvas) {
 		canvas.setFill(Color.WHITE);
-		canvas.fillText(this.message, 60, 50);
+		canvas.setFont(new Font("メイリオ",Panel.panelW()));
+		canvas.setTextAlign(TextAlignment.CENTER);
+		canvas.fillText(this.message, Panel.panelW() * 8, Panel.panelW() * 3);
 	}
 
 	// 次のミノ表示
@@ -303,15 +337,19 @@ public class Tetris_Obj {
 	private void showScore(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(scoreX, scoreY, scoreW, scoreH);
+		canvas.setFont(new Font("メイリオ",Panel.panelW()));
+		canvas.setTextAlign(TextAlignment.LEFT);
 		canvas.setFill(Color.WHITE);
-		canvas.fillText("スコア：" + this.score, scoreX + Panel.panelW(), scoreY + Panel.panelW());
+		canvas.fillText("スコア：" + this.score, scoreX + (Panel.panelW() * 2), scoreY + (Panel.panelH() * 1.5));
 	}
 
 	// レベル表示
 	private void showLevel(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(levelX, levelY, levelW, levelH);
+		canvas.setFont(new Font("メイリオ",Panel.panelW()));
+		canvas.setTextAlign(TextAlignment.LEFT);
 		canvas.setFill(Color.WHITE);
-		canvas.fillText("LV：" + this.level, levelX + Panel.panelW(), levelY + Panel.panelW());
+		canvas.fillText("LV：" + this.level, levelX + (Panel.panelW() * 2), levelY + (Panel.panelH() * 1.5));
 	}
 }

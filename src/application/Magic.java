@@ -17,7 +17,7 @@ public class Magic {
 	private TetrisImage flameImage_3 = new TetrisImage();
 
 	private static Magic magic = null;
-	private int magicNum = 3; // 魔法使用可能回数
+	private int magicNum = 99; // 魔法使用可能回数
 
 	private Magic() {
 		// new によるインスタンス化を許可しない
@@ -36,13 +36,13 @@ public class Magic {
 		canvas.fillRect(magicX, magicY, magicW, magicH);
 
 		if (this.magicNum > 0) {
-			canvas.drawImage(this.flameImage_1.flameAnime(), magicX + (Panel.panelW() * 1), magicY, 32, 32);
+			canvas.drawImage(this.flameImage_1.flameAnime(), magicX + (Panel.panelW() * 1), magicY + (Panel.panelH() * 0.5), Panel.panelW(), Panel.panelH());
 		}
 		if (this.magicNum > 1) {
-			canvas.drawImage(this.flameImage_2.flameAnime(), magicX + (Panel.panelW() * 3), magicY, 32, 32);
+			canvas.drawImage(this.flameImage_2.flameAnime(), magicX + (Panel.panelW() * 3), magicY + (Panel.panelH() * 0.5), Panel.panelW(), Panel.panelH());
 		}
 		if (this.magicNum > 2) {
-			canvas.drawImage(this.flameImage_3.flameAnime(), magicX + (Panel.panelW() * 5), magicY, 32, 32);
+			canvas.drawImage(this.flameImage_3.flameAnime(), magicX + (Panel.panelW() * 5), magicY + (Panel.panelH() * 0.5), Panel.panelW(), Panel.panelH());
 		}
 	}
 
