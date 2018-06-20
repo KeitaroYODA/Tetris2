@@ -84,11 +84,12 @@ class Cursor {
 		double h = this.cursorH;
 
 		switch(gameStatus) {
-		case 6:
+		case Tetris_Obj.GAME_MAGIC_SELECT:
 			canvas.drawImage(this.magicImage.magicCircle(),x, y, w, h);
 			break;
-		case 7:
-			canvas.drawImage(this.magicImage.bombAnime(),x, y, w, h);
+		case Tetris_Obj.GAME_MAGIC_EXEC:
+			//canvas.drawImage(this.magicImage.bombAnime(),x, y, w, h);
+			canvas.drawImage(this.magicImage.magicIoAnime(),Panel.panelW(), 0, Panel.panelW() * Field.COL(), Panel.panelH() * Field.ROW());
 			break;
 		}
 	}

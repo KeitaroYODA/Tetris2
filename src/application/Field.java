@@ -18,9 +18,6 @@ class Field {
 
 	private static Field field;
 	private Mino mino;
-	private TetrisImage magicImage = new TetrisImage();
-
-	// 魔法発動カーソル
 	private Cursor cursor = new Cursor();
 
 	public static Field getInstance() {
@@ -202,7 +199,7 @@ class Field {
 	}
 
 	// 積みあがったパネルが揃っていれば揃った行数を返す
-	public int checkRemoveRow() {
+	public int checkDeleteRow() {
 
 		int checkNum = 0;
 		boolean check = false;
@@ -239,15 +236,17 @@ class Field {
 	// 床またはパネルに衝突するまでパネルを落下させる
 	// １マスずつ落下させる
 	public void movePanel() {
-		int x = this.cursor.cursorX();
-		int y = this.cursor.cursorY();
+		//int x = this.cursor.cursorX();
+		//int y = this.cursor.cursorY();
 
 		for (int row = (ROW - 1); row > 0; row--) {
 			for (int col = 0; col < COL; col++) {
 
+				/*
 				if (col != x || row > y) {
 					continue;
 				}
+				*/
 
 				if (this.panelArray[row][col] != null) {
 					// 自身より下のパネルの有無をチェック
@@ -311,6 +310,21 @@ class Field {
 		this.panelArray = editArray;
 	}
 
+	// 積みあがっているブミノの高さを返す
+	public int getMaxHeight() {
+		int result = ROW;
+		for (int i = 0; i < ROW; i++) {
+			for (int l = 0; l < COL; l++) {
+				if (this.panelArray[i][l] != null) {
+					if (i < result) {
+						result = i;
+					}
+				}
+			}
+		}
+		return result;
+	}
+
 	// ミノの情報のパネル情報をフィールドに渡す
 	public void setMino2Field() {
 		int[][] minoPanelArray = this.mino.getPanelArray();
@@ -333,8 +347,6 @@ class Field {
 	// フィールドを表示
 	public void show(GraphicsContext canvas, int gameStatus) {
 
-		int[][] cursorArray = this.cursor.getCursorArray();
-
 		// 背景及び積み上げられたパネルを表示
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
@@ -343,6 +355,9 @@ class Field {
 				double y = i * Panel.panelH() + Field.dispY;
 				double w = Panel.panelW();
 				double h = Panel.panelH();
+
+				canvas.setFill(Color.BLACK);
+				canvas.fillRect(x, y, w, h);
 
 				if (this.panelArray[i][l] != null) {
 					// パネルを表示
@@ -353,11 +368,6 @@ class Field {
 					} else {
 						canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
 					}
-
-				} else {
-					// 背景色で塗りつぶし
-					canvas.setFill(Color.BLACK);
-					canvas.fillRect(x, y, w, h);
 				}
 			}
 		}
