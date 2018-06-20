@@ -1,7 +1,6 @@
 package application;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 class Field {
@@ -17,13 +16,22 @@ class Field {
 	// 画面に表示されるパネルの表示位置を保持
 	private Panel[][] panelArray = new Panel[ROW][COL];
 
-	// 落下中のミノオブジェクト
+	private static Field field;
 	private Mino mino;
-
-	// 魔法発動カーソル
 	private Cursor cursor = new Cursor();
 
-	public Field() {
+	public static Field getInstance() {
+		if (field == null) {
+			field = new Field();
+		}
+		return field;
+	}
+
+	private Field() {
+		this.init();
+	}
+
+	public void init() {
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
 				this.panelArray[i][l] = null;
@@ -191,7 +199,7 @@ class Field {
 	}
 
 	// 積みあがったパネルが揃っていれば揃った行数を返す
-	public int checkRemoveRow() {
+	public int checkDeleteRow() {
 
 		int checkNum = 0;
 		boolean check = false;
@@ -216,23 +224,29 @@ class Field {
 	// パネル１枚を削除する。魔法実行時に呼び出される
 	public void deletePanel() {
 		int row, col;
-		row = this.cursor.cursorY();
-		col = this.cursor.cursorX();
-		this.panelArray[row][col] = null;
+		for (int i = 0; i < Cursor.ROW(); i++) {
+			for (int l = 0; l < Cursor.COL(); l++) {
+				row = this.cursor.cursorY() + i;
+				col = this.cursor.cursorX() + l;
+				this.panelArray[row][col] = null;
+			}
+		}
 	}
 
 	// 床またはパネルに衝突するまでパネルを落下させる
 	// １マスずつ落下させる
 	public void movePanel() {
-		int x = this.cursor.cursorX();
-		int y = this.cursor.cursorY();
+		//int x = this.cursor.cursorX();
+		//int y = this.cursor.cursorY();
 
 		for (int row = (ROW - 1); row > 0; row--) {
 			for (int col = 0; col < COL; col++) {
 
+				/*
 				if (col != x || row > y) {
 					continue;
 				}
+				*/
 
 				if (this.panelArray[row][col] != null) {
 					// 自身より下のパネルの有無をチェック
@@ -262,7 +276,6 @@ class Field {
 				}
 			}
 
-			// 空洞の行を埋める
 			if (check) {
 				for (int col = 0; col < COL; col++) {
 					this.panelArray[row][col] = null;
@@ -297,6 +310,21 @@ class Field {
 		this.panelArray = editArray;
 	}
 
+	// 積みあがっているブミノの高さを返す
+	public int getMaxHeight() {
+		int result = ROW;
+		for (int i = 0; i < ROW; i++) {
+			for (int l = 0; l < COL; l++) {
+				if (this.panelArray[i][l] != null) {
+					if (i < result) {
+						result = i;
+					}
+				}
+			}
+		}
+		return result;
+	}
+
 	// ミノの情報のパネル情報をフィールドに渡す
 	public void setMino2Field() {
 		int[][] minoPanelArray = this.mino.getPanelArray();
@@ -317,7 +345,7 @@ class Field {
 	}
 
 	// フィールドを表示
-	public void show(GraphicsContext canvas) {
+	public void show(GraphicsContext canvas, int gameStatus) {
 
 		// 背景及び積み上げられたパネルを表示
 		for (int i = 0; i < ROW; i++) {
@@ -328,17 +356,42 @@ class Field {
 				double w = Panel.panelW();
 				double h = Panel.panelH();
 
+				canvas.setFill(Color.BLACK);
+				canvas.fillRect(x, y, w, h);
+
 				if (this.panelArray[i][l] != null) {
 					// パネルを表示
-					Image img =	panelArray[i][l].getImage();
-					canvas.drawImage(img,x, y, w, h);
-				} else {
-					// 背景色で塗りつぶし
-					canvas.setFill(Color.BLACK);
-					canvas.fillRect(x, y, w, h);
+					if (gameStatus == 6) {
+						canvas.setGlobalAlpha(0.5);
+						canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
+						canvas.setGlobalAlpha(1.0);
+					} else {
+						canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
+					}
 				}
 			}
 		}
+
+		/*
+		// 魔法対象パネル以外は半透明表示
+		for (int k = 0; k < Cursor.ROW(); k++) {
+			for (int m = 0; m < Cursor.COL(); m++) {
+				int row = this.cursor.cursorY() + k;
+				int col = this.cursor.cursorX() + m;
+
+				double x = m * Panel.panelW() + Field.dispX;
+				double y = k * Panel.panelH() + Field.dispY;
+				double w = Panel.panelW();
+				double h = Panel.panelH();
+
+				if (this.panelArray[row][col] != null) {
+					canvas.setGlobalAlpha(0.5);
+					canvas.drawImage(panelArray[row][col].getImage(),x, y, w, h);
+					canvas.setGlobalAlpha(1.0);
+				}
+			}
+		}
+		*/
 
 		// 落下中のミノを表示
 		this.mino.show(canvas);

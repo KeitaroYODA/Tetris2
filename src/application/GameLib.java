@@ -16,9 +16,10 @@ import javafx.stage.Stage;
 public class GameLib extends Application {
 
 	// 画面の幅
-	private static final int WIDTH = 660;
-	// private static final int WIDTH = 440;
-	private static final int HEIGHT = 380;
+	//private static final int WIDTH = 660;
+	//private static final int HEIGHT = 380;
+	private static final int WIDTH = 1320;
+	private static final int HEIGHT = 760;
 
 	// テトリスクラス
 	private Tetris_Obj game = new Tetris_Obj();

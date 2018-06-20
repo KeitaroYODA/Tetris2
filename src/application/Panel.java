@@ -4,11 +4,9 @@ import javafx.scene.image.WritableImage;
 
 // ミノを構成するパネルクラス
 class Panel {
-	// パネル幅
-	private static final double panelW = 20;
 
-	// パネル高さ
-	private static final double panelH = 20;
+	private static final double panelW = GameLib.width() / 33;
+	private static final double panelH = GameLib.height() / 19;
 
 	// 画像オブジェクト
 	private WritableImage resizedImage;
