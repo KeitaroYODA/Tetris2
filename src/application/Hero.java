@@ -1,11 +1,11 @@
 package application;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Hero {
 
-	private static Hero hero = null;
-
+	// 主人公さんのモーション指定
 	public static final int HERO_ACTION_MENU = 0;
 	public static final int HERO_ACTION_MAIN = 1;
 	public static final int HERO_ACTION_REST = 2;
@@ -16,17 +16,15 @@ public class Hero {
 	public static final int HERO_ACTION_LEVELUP = 8;
 	public static final int HERO_ACTION_GAMEOVER = 9;
 	public static final int HERO_ACTION_PANIC = 10;
+	public static final int HERO_ACTION_ALLDOWN = 11;
 
-	private int action = 0;
+	private static Hero hero = null;
+	private int action = HERO_ACTION_MENU;
 	private TetrisImage heroImage = new TetrisImage();
 
-	// 表示位置　<TODO>Tetris_Obj側で定義したほうが良いかも
-	private static final double heroX = Panel.panelW() * 18;
-	private static final double heroY = Panel.panelH() * 12;
-	private static final double heroW = Panel.panelW() * 6;
-	private static final double heroH = Panel.panelH() * 6;
+	private Hero() {
+	}
 
-	// 主人公さんクラスのインスタンスを返す
 	public static Hero getInstance() {
 		if (hero == null) {
 			hero = new Hero();
@@ -50,41 +48,44 @@ public class Hero {
 	public void show(GraphicsContext canvas) {
 
 		// 背景の表示
-		canvas.drawImage(TetrisImage.haikeiHeroImg, heroX, heroY, (heroH / 3) * 4, heroH);
+		canvas.setFill(Color.BLACK);
+		canvas.fillRect(Conf.HERO_X, Conf.HERO_Y, (Conf.HERO_W / 3) * 4, Conf.HERO_H);
+		canvas.setGlobalAlpha(0.7); // 背景画像を少し暗くする
+		canvas.drawImage(TetrisImage.haikeiHeroImg, Conf.HERO_X, Conf.HERO_Y, (Conf.HERO_W / 3) * 4, Conf.HERO_H);
+		canvas.setGlobalAlpha(1.0);
 
 		// 主人公さんの表示切替
 		switch(this.action) {
 		case HERO_ACTION_MENU: // スタート画面（繰り返し）
-			canvas.drawImage(heroImage.heroAnime_5(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_5(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_REST: // ポーズ（繰り返し）
-			canvas.drawImage(heroImage.heroAnime_1(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_1(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_GUTS_1: // ブロックが１行揃った
-			canvas.drawImage(heroImage.heroAnime_2(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_2(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_GAMEOVER: // ゲームオーバー
-			canvas.drawImage(heroImage.heroAnime_6(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_6(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_CHARGE: // 魔法準備中（繰り返し）
-			canvas.drawImage(heroImage.heroAnime_8(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_8(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_MAGIC_1: // 魔法発動
-			canvas.drawImage(heroImage.heroAnime_4(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_4(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_LEVELUP: // レベルアップ
-			canvas.drawImage(heroImage.heroAnime_9(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_9(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_PANIC: // パニック中
-			canvas.drawImage(heroImage.heroAnime_3(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_3(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_MAIN: // 通常（繰り返し）
-			canvas.drawImage(heroImage.heroAnime_7(), heroX + (Panel.panelW() * 2), heroY, heroW, heroH);
+			canvas.drawImage(heroImage.heroAnime_7(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
+			break;
+		case HERO_ACTION_ALLDOWN: // ワッショイ（繰り返し）
+			canvas.drawImage(heroImage.heroAnime_10(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		}
-	}
-
-	private Hero() {
-		// new によるインスタンス化を許可しない
 	}
 }

@@ -14,8 +14,8 @@ abstract class Mino implements Cloneable{
 
 	// ミノに表示するタイル画像のトリミング始点
 	//protected String imgFile = "tile.png";
-	protected int tileX = 0;
-	protected int tileY = 0;
+	//protected int tileX = 0;
+	//protected int tileY = 0;
 	protected Panel panel;
 
 	// ミノの左上の配列インデックス
@@ -84,10 +84,10 @@ abstract class Mino implements Cloneable{
 			for (int col = 0; col < COL; col++) {
 
 				// パネルの左上の座標を取得
-				double x = (col + this.x) * Panel.panelW() + Field.dispX();
-				double y = (row + this.y) * Panel.panelH() + Field.dispY();
-				double w = Panel.panelW();
-				double h = Panel.panelH();
+				double x = (col + this.x) * Conf.PANEL_W + Conf.FIELD_X;
+				double y = (row + this.y) * Conf.PANEL_H + Conf.FIELD_Y;
+				double w = Conf.PANEL_W;
+				double h = Conf.PANEL_H;
 
 				if (this.panelArray[row][col] == 1) {
 					Image img = this.panel.getImage();
