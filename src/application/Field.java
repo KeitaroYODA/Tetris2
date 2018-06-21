@@ -5,9 +5,9 @@ import javafx.scene.paint.Color;
 
 class Field {
 
-	// 表示位置
-	private static final double dispX = Panel.panelW();
-	private static final double dispY = 0;
+	// フィールドの表示タイプ
+	public static final int FIELD_VIEW_NORMAL = 0;
+	public static final int FIELD_VIEW_RENSA = 1;
 
 	// 画面に表示するパネルの範囲
 	private static final int COL = 16; // 列数
@@ -15,10 +15,11 @@ class Field {
 
 	// 画面に表示されるパネルの表示位置を保持
 	private Panel[][] panelArray = new Panel[ROW][COL];
+	private int viewType = FIELD_VIEW_NORMAL;
 
 	private static Field field;
 	private Mino mino;
-	private Cursor cursor = new Cursor();
+	private Magic magic = new Magic();
 
 	public static Field getInstance() {
 		if (field == null) {
@@ -39,14 +40,18 @@ class Field {
 		}
 	}
 
+	public void setViewType(int viewType) {
+		this.viewType = viewType;
+	}
+
 	// 落下中のミノをフィールドのセット
 	public void setMino(Mino mino) {
 		this.mino = mino;
 	}
 
 	// カーソルオブジェクトを返す
-	public Cursor getCursor() {
-		return this.cursor;
+	public Magic getMagic() {
+		return this.magic;
 	}
 
 	// ミノを落下させる
@@ -221,13 +226,49 @@ class Field {
 		return checkNum;
 	}
 
+	// フィールド上のパネルをすべて落下させる。イオ発動時に呼び出される
+	public boolean allDown() {
+		Panel[][] editArray = new Panel[ROW][COL];
+		boolean result = false;
+
+		for (int i = 0; i < ROW; i++) {
+			for (int l = 0; l < COL; l++) {
+				editArray[i][l] = null;
+			}
+		}
+
+		for (int row = (ROW - 1); row > 0; row--) {
+			for (int col = 0; col < COL; col++) {
+
+				if (this.panelArray[row][col] != null) {
+					int index = row + 1;
+
+					// 既に床に接地している場合
+					if (index == ROW) {
+						// 移動させない
+						editArray[row][col] = this.panelArray[row][col];
+					} else if (editArray[index][col] != null) {
+						// ほかのパネルに衝突した場合も移動させない
+						editArray[row][col] = this.panelArray[row][col];
+					} else {
+						editArray[index][col] = this.panelArray[row][col];
+						result = true;
+					}
+				}
+
+			}
+		}
+		this.panelArray = editArray;
+		return result;
+	}
+
 	// パネル１枚を削除する。魔法実行時に呼び出される
 	public void deletePanel() {
 		int row, col;
-		for (int i = 0; i < Cursor.ROW(); i++) {
-			for (int l = 0; l < Cursor.COL(); l++) {
-				row = this.cursor.cursorY() + i;
-				col = this.cursor.cursorX() + l;
+		for (int i = 0; i < Magic.ROW(); i++) {
+			for (int l = 0; l < Magic.COL(); l++) {
+				row = this.magic.cursorY() + i;
+				col = this.magic.cursorX() + l;
 				this.panelArray[row][col] = null;
 			}
 		}
@@ -345,29 +386,30 @@ class Field {
 	}
 
 	// フィールドを表示
-	public void show(GraphicsContext canvas, int gameStatus) {
+	public void show(GraphicsContext canvas) {
 
 		// 背景及び積み上げられたパネルを表示
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
 
-				double x = l * Panel.panelW() + Field.dispX;
-				double y = i * Panel.panelH() + Field.dispY;
-				double w = Panel.panelW();
-				double h = Panel.panelH();
+				double x = l * Conf.PANEL_W + Conf.FIELD_X;
+				double y = i * Conf.PANEL_H + Conf.FIELD_Y;
+				double w = Conf.PANEL_W;
+				double h = Conf.PANEL_H;
+
+				/*
+				if (this.viewType == FIELD_VIEW_RENSA) {
+					canvas.setFill(Color.DARKGRAY);
+				} else {
+					canvas.setFill(Color.BLACK);
+				}
+				*/
 
 				canvas.setFill(Color.BLACK);
 				canvas.fillRect(x, y, w, h);
 
 				if (this.panelArray[i][l] != null) {
-					// パネルを表示
-					if (gameStatus == 6) {
-						canvas.setGlobalAlpha(0.5);
-						canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
-						canvas.setGlobalAlpha(1.0);
-					} else {
-						canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
-					}
+					canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
 				}
 			}
 		}
@@ -395,9 +437,6 @@ class Field {
 
 		// 落下中のミノを表示
 		this.mino.show(canvas);
-
-		// 魔法発動カーソルを表示
-		//this.cursor.show(canvas);
 	}
 
 	public static int ROW() {
@@ -406,13 +445,5 @@ class Field {
 
 	public static int COL() {
 		return COL;
-	}
-
-	public static double dispX() {
-		return dispX;
-	}
-
-	public static double dispY() {
-		return dispY;
 	}
 }

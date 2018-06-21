@@ -21,6 +21,7 @@ class TetrisAudio {
 	private static AudioClip menu1;
 	private static AudioClip sousou3;
 	private static AudioClip levelup1;
+	private static AudioClip magicelectron4;
 
 	// BGM
 	private static MediaPlayer bgm1;
@@ -86,6 +87,11 @@ class TetrisAudio {
 		magicAudio.play();
 		magicAudio.setVolume(1.0);
 
+		magicelectron4 = new AudioClip(new File("res/audio/magic-electron4.mp3").toURI().toString());
+		magicelectron4.setVolume(0);
+		magicelectron4.play();
+		magicelectron4.setVolume(1.0);
+
 		magicCharge1 = new AudioClip(new File("res/audio/magic-charge1.mp3").toURI().toString());
 		magicCharge1.setVolume(0);
 		magicCharge1.play();
@@ -146,9 +152,14 @@ class TetrisAudio {
 		puyon1.play();
 	}
 
-	// 魔法炸裂
-	public static void bomb() {
+	// 魔法炸裂（メラ）
+	public static void mera() {
 		magicAudio.play();
+	}
+
+	// 魔法炸裂（イオ）
+	public static void io() {
+		magicelectron4.play();
 	}
 
 	// 魔法チャージ中
