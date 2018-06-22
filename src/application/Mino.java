@@ -12,10 +12,7 @@ abstract class Mino implements Cloneable{
 	private static final int ROW = 4;
 	private static final int COL = 4;
 
-	// ミノに表示するタイル画像のトリミング始点
-	//protected String imgFile = "tile.png";
-	//protected int tileX = 0;
-	//protected int tileY = 0;
+	// ミノに表示する画像情報を格納
 	protected Panel panel;
 
 	// ミノの左上の配列インデックス

@@ -1,6 +1,7 @@
 package application;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 class Field {
@@ -20,6 +21,7 @@ class Field {
 	private static Field field;
 	private Mino mino;
 	private Magic magic = new Magic();
+	private TetrisImage image = new TetrisImage();
 
 	public static Field getInstance() {
 		if (field == null) {
@@ -383,33 +385,47 @@ class Field {
 				}
 			}
 		}
+
+		// 渡し終わったミノを削除
+		this.mino = null;
 	}
 
 	// フィールドを表示
 	public void show(GraphicsContext canvas) {
 
+		boolean isCmpl = false;
 		// 背景及び積み上げられたパネルを表示
 		for (int i = 0; i < ROW; i++) {
+			isCmpl = true;
 			for (int l = 0; l < COL; l++) {
+
+				if (this.panelArray[i][l] == null) {
+					isCmpl = false;
+				}
 
 				double x = l * Conf.PANEL_W + Conf.FIELD_X;
 				double y = i * Conf.PANEL_H + Conf.FIELD_Y;
 				double w = Conf.PANEL_W;
 				double h = Conf.PANEL_H;
 
-				/*
-				if (this.viewType == FIELD_VIEW_RENSA) {
-					canvas.setFill(Color.DARKGRAY);
-				} else {
-					canvas.setFill(Color.BLACK);
-				}
-				*/
-
 				canvas.setFill(Color.BLACK);
 				canvas.fillRect(x, y, w, h);
 
 				if (this.panelArray[i][l] != null) {
 					canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
+				}
+			}
+
+			// 1行揃った
+			if (isCmpl) {
+				Image hitEffects = this.image.hiteffectAnime_1();
+				// 行の消滅エフェクトを表示
+				for (int l = 0; l < COL; l++) {
+					double x = l * Conf.PANEL_W + Conf.FIELD_X;
+					double y = i * Conf.PANEL_H + Conf.FIELD_Y;
+					double w = Conf.PANEL_W;
+					double h = Conf.PANEL_H;
+					canvas.drawImage(hitEffects,x, y, w, h);
 				}
 			}
 		}
@@ -436,7 +452,18 @@ class Field {
 		*/
 
 		// 落下中のミノを表示
-		this.mino.show(canvas);
+		if (this.mino != null) {
+			this.mino.show(canvas);
+		}
+	}
+
+	// アニメの再生が終わったら真を返す
+	public boolean animeIsEnd() {
+		return image.isEnd();
+	}
+
+	public TetrisImage getImage() {
+		return this.image;
 	}
 
 	public static int ROW() {

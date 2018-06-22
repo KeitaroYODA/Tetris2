@@ -17,6 +17,8 @@ final class TetrisImage{
 	private static final Image hero = new Image(new File("res/image/hero.png").toURI().toString()); // 主人公さん
 	private static final Image kaenbeam = new Image(new File("res/image/kaenbeam.png").toURI().toString()); // 魔法（イオ）発動
 	private static final Image moji = new Image(new File("res/image/moji.png").toURI().toString());
+	private static final Image hiteffects = new Image(new File("res/image/hiteffects.png").toURI().toString());
+	private static final Image frame = new Image(new File("res/image/frame.png").toURI().toString());
 
 	public TetrisImage() {
 		this.init();
@@ -33,31 +35,58 @@ final class TetrisImage{
 		return this.isEnd;
 	}
 
-	// 画像 ///////////////////////////////////
-	// 文字画像
-	public static final WritableImage A = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage E = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage G = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage I = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage L = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage M = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage O = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage P = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage R = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage S = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage T = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage U = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage V = new WritableImage(moji.getPixelReader(),0, 0, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
 
+
+	// 画像 ///////////////////////////////////
+	// 文字画像 1024 tate110 yoko64
+	public static final WritableImage A = new WritableImage(moji.getPixelReader(),64, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage E = new WritableImage(moji.getPixelReader(),320, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage G = new WritableImage(moji.getPixelReader(),448, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage I = new WritableImage(moji.getPixelReader(),576, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage L = new WritableImage(moji.getPixelReader(),768, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage M = new WritableImage(moji.getPixelReader(),832, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage O = new WritableImage(moji.getPixelReader(),960, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage P = new WritableImage(moji.getPixelReader(),0, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage R = new WritableImage(moji.getPixelReader(),128, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage S = new WritableImage(moji.getPixelReader(),192, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage T = new WritableImage(moji.getPixelReader(),256, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage U = new WritableImage(moji.getPixelReader(),320, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
+	public static final WritableImage V = new WritableImage(moji.getPixelReader(),384, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
 	// ミノ画像
 	public static final WritableImage minoBar = new WritableImage(tile_1.getPixelReader(),0, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
 	public static final WritableImage minoKagi1 = new WritableImage(tile_1.getPixelReader(),32, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
 	public static final WritableImage minoKagi2 = new WritableImage(tile_1.getPixelReader(),64, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
 	public static final WritableImage minoSquare = new WritableImage(tile_1.getPixelReader(),96, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
 	public static final WritableImage minoTotu = new WritableImage(tile_1.getPixelReader(),128, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
-	// 背景画像
+	// 背景画像（タイル）
 	public static final WritableImage haikei = new WritableImage(tile_1.getPixelReader(),448, 96, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
+	// 主人公さんの背景
 	public static final Image haikeiHeroImg = new Image(new File("res/image/haikei_hero.jpg").toURI().toString());
+
+	// ミノエフェクト ///////////////////////////////////
+	// 1行揃った際の削除エフェクト
+	public WritableImage hiteffectAnime_1() {
+		WritableImage[] resizedImage = new WritableImage[7];
+		resizedImage[0] = new WritableImage(hiteffects.getPixelReader(),192, 576, (int) (hiteffects.getWidth() / 5), (int) (hiteffects.getHeight() / 10));
+		resizedImage[1] = new WritableImage(hiteffects.getPixelReader(),0, 384, (int) (hiteffects.getWidth() / 5), (int) (hiteffects.getHeight() / 10));
+		resizedImage[2] = new WritableImage(hiteffects.getPixelReader(),384, 1536, (int) (hiteffects.getWidth() / 5), (int) (hiteffects.getHeight() / 10));
+		resizedImage[3] = new WritableImage(hiteffects.getPixelReader(),576, 1536, (int) (hiteffects.getWidth() / 5), (int) (hiteffects.getHeight() / 10));
+		resizedImage[4] = new WritableImage(hiteffects.getPixelReader(),748, 1536, (int) (hiteffects.getWidth() / 5), (int) (hiteffects.getHeight() / 10));
+		resizedImage[5] = new WritableImage(hiteffects.getPixelReader(),384, 1728, (int) (hiteffects.getWidth() / 5), (int) (hiteffects.getHeight() / 10));
+		resizedImage[6] = new WritableImage(hiteffects.getPixelReader(),576, 1728, (int) (hiteffects.getWidth() / 5), (int) (hiteffects.getHeight() / 10));
+
+		int index;
+		// アニメの再生が終わった
+		if (this.count == resizedImage.length) {
+			this.isEnd = true;
+			index = resizedImage.length - 1;
+		} else {
+			index = this.count;
+			this.count++;
+		}
+
+		return resizedImage[index];
+	}
 
 	// 主人公さんのモーション ///////////////////////////////////
 	// ほうきに座って休息
@@ -441,6 +470,21 @@ final class TetrisImage{
 		if (index == 0) {
 			TetrisAudio.io();
 		}
+
+		return resizedImage[index];
+	}
+
+	public WritableImage frameAnime() {
+		WritableImage[] resizedImage = new WritableImage[20];
+		resizedImage[0] = new WritableImage(frame.getPixelReader(),0, 0, (int) (frame.getWidth()), (int) (frame.getHeight() / 12));
+
+
+		int index = 0;
+		if (this.count >= resizedImage.length) {
+			this.count = 0;
+		}
+		index = this.count;
+		this.count++;
 
 		return resizedImage[index];
 	}

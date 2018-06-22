@@ -5,7 +5,7 @@ class Conf {
 	// メイン画面上に表示されるメッセージ
 	public static final String MESSAGE_NONE = "";
 	public static final String MESSAGE_MENU = "SMILE TETLIS";
-	public static final String MESSAGE_PAUSE = "Pause";
+	public static final String MESSAGE_PAUSE = "PAUSE...";
 	public static final String MESSAGE_GAMEOVER = "GAME OVER!!";
 	public static final String MESSAGE_MERA = "";
 	public static final String MESSAGE_RENSA = "";
@@ -21,7 +21,7 @@ class Conf {
 	public static final String INFO_RENSA = "Please Wait.....";
 
 	// ゲーム設定 ///////////////////////////////////////
-	public static final int ALL_DOWN_WAIT = 7; // イオ発動後のブロック落下待ち時間
+	public static final int ALL_DOWN_WAIT = 6; // イオ発動後のブロック落下待ち時間（値が少ない程速く落ちる）
 	public static final int MAX_SCORE = 100000; // 最大スコア
 	public static final int MAX_LEVEL = 10; // 最大レベル
 	public static final int LEVELUP_SCORE = 1000; // レベルアップ条件スコア
@@ -36,12 +36,18 @@ class Conf {
 	// ミノ構成するパネルサイズ
 	public static final double PANEL_W = GameLib.width() / 33;
 	public static final double PANEL_H = GameLib.height() / 19;
+	// メッセージ画像
+	public static final double MESSAGE_X = PANEL_W * 2;
+	public static final double MESSAGE_Y = PANEL_H * 4;
+	public static final double MESSAGE_W = PANEL_W * 1.3;
+	public static final double MESSAGE_H = PANEL_H * 3;
+	public static final double MESSAGE_C = PANEL_W / 10;
 	// メイン画面表示
 	public static final double FIELD_X = PANEL_W;
 	public static final double FIELD_Y = 0;
 	// 得点表示
 	public static final double SCORE_X = PANEL_W * 18;
-	public static final double SCORE_Y = PANEL_W * 1;
+	public static final double SCORE_Y = PANEL_H * 1;
 	public static final double SCORE_W = PANEL_W * 14;
 	public static final double SCORE_H = PANEL_H * 2;
 	// 次のミノ表示
