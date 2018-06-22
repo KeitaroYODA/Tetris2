@@ -2,6 +2,8 @@ package application;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class Hero {
 
@@ -45,6 +47,13 @@ public class Hero {
 		this.action = action;
 	}
 
+	private void showMessage(GraphicsContext canvas, String message) {
+		canvas.setFont(new Font("メイリオ", Conf.PANEL_W));
+		canvas.setTextAlign(TextAlignment.LEFT);
+		canvas.setFill(Color.WHITE);
+		canvas.fillText(message, Conf.HERO_X + (Conf.PANEL_W * 1), Conf.HERO_Y + (Conf.PANEL_H * 1));
+	}
+
 	public void show(GraphicsContext canvas) {
 
 		// 背景の表示
@@ -75,6 +84,7 @@ public class Hero {
 			canvas.drawImage(heroImage.heroAnime_4(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_LEVELUP: // レベルアップ
+			this.showMessage(canvas, "Level UP !!");
 			canvas.drawImage(heroImage.heroAnime_9(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		case HERO_ACTION_PANIC: // パニック中
