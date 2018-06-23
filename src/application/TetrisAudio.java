@@ -6,7 +6,7 @@ import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-class TetrisAudio {
+final class TetrisAudio {
 
 	// 効果音
 	private static AudioClip decision26;
@@ -27,11 +27,11 @@ class TetrisAudio {
 	private static MediaPlayer bgm1;
 
 	static {
-		// 音ずれ対策のため1回無音で再生。あまり関係ないかも
 		Media m = new Media(new File("res/audio/bgm1.mp3").toURI().toString());
 		bgm1 = new MediaPlayer(m);
 		bgm1.setCycleCount(99);
 
+		// 音ずれ対策のため1回無音で再生。あまり関係ないかも
 		levelup1 = new AudioClip(new File("res/audio/trumpet1.mp3").toURI().toString());
 		levelup1.setVolume(0);
 		levelup1.play();

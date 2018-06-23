@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-public class Hero {
+final class Hero {
 
 	// 主人公さんのモーション指定
 	public static final int HERO_ACTION_MENU = 0;

@@ -21,18 +21,22 @@ abstract class Mino implements Cloneable{
 
 	// ミノの向き
 	// 1:正面、2:右向き、3:上下逆、4:左向き
-	protected int direction = 1;
+	protected static final int DIRECTION_NORMAL = 1;
+	protected static final int DIRECTION_RIGHT = 2;
+	protected static final int DIRECTION_REVERCE = 3;
+	protected static final int DIRECTION_LEFT = 4;
+	protected int direction = DIRECTION_NORMAL;
 
-	// ミノを構成するパネルの位置情報を保持
+	// ミノを構成するパネルの位置情報を保持s
 	protected int[][] panelArray = new int[ROW][COL];
 
 	public Mino() {
-		this.initXY();
+		this.init();
 		this.initPanel();
 	}
 
 	// ミノの表示位置を初期化
-	public void initXY() {
+	public void init() {
 		this.x = 6;
 		this.y = 0;
 	}
@@ -80,7 +84,6 @@ abstract class Mino implements Cloneable{
 		for (int row = 0; row < ROW; row++) {
 			for (int col = 0; col < COL; col++) {
 
-				// パネルの左上の座標を取得
 				double x = (col + this.x) * Conf.PANEL_W + Conf.FIELD_X;
 				double y = (row + this.y) * Conf.PANEL_H + Conf.FIELD_Y;
 				double w = Conf.PANEL_W;
@@ -88,7 +91,7 @@ abstract class Mino implements Cloneable{
 
 				if (this.panelArray[row][col] == 1) {
 					Image img = this.panel.getImage();
-					canvas.drawImage(img,x, y, w-1, h-1);
+					canvas.drawImage(img, x, y, w, h);
 				}
 			}
 		}

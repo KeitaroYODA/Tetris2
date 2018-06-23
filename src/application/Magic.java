@@ -2,12 +2,13 @@ package application;
 
 import javafx.scene.canvas.GraphicsContext;
 
-class Magic {
+final class Magic {
 
 	// 表示する魔法効果を指定
 	public static final int MAGIC_ACTION_NONE = 0; // 表示なし
 	public static final int MAGIC_ACTION_IO_SELECT = 1; // 魔法（イオ）発動準備中エフェクト表示
 	public static final int MAGIC_ACTION_IO = 2; // 魔法（イオ）発動エフェクト表示
+	public static final int MAGIC_ACTION_FRAME = 5; // 魔法（イオ）発動後の全パネル落下中のエフェクト表示
 	public static final int MAGIC_ACTION_MERA_SELECT = 3; // 魔法（メラ）発動準備中エフェクト表示
 	public static final int MAGIC_ACTION_MERA = 4; // 魔法（メラ）発動エフェクト表示
 
@@ -24,7 +25,8 @@ class Magic {
 	private double cursorW = Conf.PANEL_W * COL;
 	private double cursorH = Conf.PANEL_H * ROW;
 	private int action;
-
+	private static Magic magic;
+	
 	// 表示させるアクションを設定
 	public void setAction(int action) {
 		if (this.action != action) {
@@ -33,8 +35,8 @@ class Magic {
 		this.action = action;
 	}
 
-	public Magic() {
-		init();
+	private Magic() {
+		initCursor();
 
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
@@ -43,7 +45,14 @@ class Magic {
 		}
 	}
 
-	public void init() {
+	public static Magic getInstance() {
+		if (magic == null) {
+			magic = new Magic();
+		}
+		return magic;
+	}
+	
+	public void initCursor() {
 		cursorX = Conf.MAGIC_CIRCLE_X;
 		cursorY = Conf.MAGIC_CIRCLE_Y;
 	}
@@ -80,9 +89,9 @@ class Magic {
 		return magicImage.isEnd();
 	}
 
-	// カーソルを表示
+	// 魔法効果を表示
 	public void show(GraphicsContext canvas) {
-
+		// メラ魔方陣表示用
 		double x = this.cursorX * Conf.PANEL_W + Conf.FIELD_X;
 		double y = this.cursorY * Conf.PANEL_H + Conf.FIELD_Y;
 		double w = this.cursorW;
@@ -95,6 +104,9 @@ class Magic {
 		case MAGIC_ACTION_IO:
 			canvas.drawImage(this.magicImage.magicIoAnime(), Conf.PANEL_W, 0, Conf.PANEL_W * Field.COL(), Conf.PANEL_H * Field.ROW());
 			break;
+		case MAGIC_ACTION_FRAME:
+			canvas.drawImage(this.magicImage.frameAnime(), Conf.PANEL_W, (Conf.PANEL_H * Field.ROW()) - ((Conf.PANEL_H * Field.ROW()) / 4), Conf.PANEL_W * Field.COL(), (Conf.PANEL_H * Field.ROW()) / 4);
+			break;
 		case MAGIC_ACTION_MERA_SELECT:
 			canvas.drawImage(this.magicImage.magicCircle(),x, y, w, h);
 			break;
@@ -106,12 +118,6 @@ class Magic {
 			break;
 		}
 	}
-
-	/*
-	public int[][] getCursorArray() {
-		return this.cursorArray;
-	}*/
-
 
 	public int cursorX() {
 		return this.cursorX;

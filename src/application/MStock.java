@@ -3,7 +3,7 @@ package application;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class MStock {
+final class MStock {
 
 	// メラゲージ画像
 	private TetrisImage flameImage_1 = new TetrisImage();
@@ -18,8 +18,7 @@ public class MStock {
 	private int magicNumMera; // 魔法（メラ）使用可能回数
 	private int magicNumIo; // 魔法（イオ）使用可能回数
 
-	private MStock() {
-	}
+	private MStock() {}
 
 	public void init() {
 		magicNumMera = Conf.MAX_MSTOCK_MERA;

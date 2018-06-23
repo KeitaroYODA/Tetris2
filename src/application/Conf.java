@@ -1,6 +1,6 @@
 package application;
 
-class Conf {
+final class Conf {
 	// メッセージ関連 ///////////////////////////////////////
 	// メイン画面上に表示されるメッセージ
 	public static final String MESSAGE_NONE = "";
@@ -76,6 +76,5 @@ class Conf {
 	public static final double MSTOCK_W = PANEL_W * 7;
 	public static final double MSTOCK_H = PANEL_H * 4;
 
-	public Conf() {
-	}
+	private Conf() {}
 }

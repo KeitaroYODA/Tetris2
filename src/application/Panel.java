@@ -3,7 +3,7 @@ package application;
 import javafx.scene.image.WritableImage;
 
 // ミノを構成するパネルクラス
-class Panel {
+final class Panel {
 
 	// 画像オブジェクト
 	private WritableImage resizedImage;

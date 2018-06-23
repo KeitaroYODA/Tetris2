@@ -21,25 +21,25 @@ class MinoKagi1 extends Mino {
 		this.initPanel();
 
 		switch(this.direction) {
-		case 1: // 正面
+		case DIRECTION_NORMAL: // 正面
 			this.panelArray[1][1] = 1;
 			this.panelArray[2][1] = 1;
 			this.panelArray[2][2] = 1;
 			this.panelArray[3][2] = 1;
 			break;
-		case 2: // 右向き
+		case DIRECTION_RIGHT: // 右向き
 			this.panelArray[1][2] = 1;
 			this.panelArray[1][3] = 1;
 			this.panelArray[2][1] = 1;
 			this.panelArray[2][2] = 1;
 			break;
-		case 3: // 上下逆
+		case DIRECTION_REVERCE: // 上下逆
 			this.panelArray[1][1] = 1;
 			this.panelArray[2][1] = 1;
 			this.panelArray[2][2] = 1;
 			this.panelArray[3][2] = 1;
 			break;
-		case 4: // 左向き
+		case DIRECTION_LEFT: // 左向き
 			this.panelArray[1][2] = 1;
 			this.panelArray[1][3] = 1;
 			this.panelArray[2][1] = 1;

@@ -16,7 +16,6 @@ final class TetrisImage{
 	private static final Image frameeffect = new Image(new File("res/image/frameeffects006m.png").toURI().toString());
 	private static final Image hero = new Image(new File("res/image/hero.png").toURI().toString()); // 主人公さん
 	private static final Image kaenbeam = new Image(new File("res/image/kaenbeam.png").toURI().toString()); // 魔法（イオ）発動
-	private static final Image moji = new Image(new File("res/image/moji.png").toURI().toString());
 	private static final Image hiteffects = new Image(new File("res/image/hiteffects.png").toURI().toString());
 	private static final Image frame = new Image(new File("res/image/frame.png").toURI().toString());
 
@@ -35,23 +34,7 @@ final class TetrisImage{
 		return this.isEnd;
 	}
 
-
-
 	// 画像 ///////////////////////////////////
-	// 文字画像 1024 tate110 yoko64
-	public static final WritableImage A = new WritableImage(moji.getPixelReader(),64, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage E = new WritableImage(moji.getPixelReader(),320, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage G = new WritableImage(moji.getPixelReader(),448, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage I = new WritableImage(moji.getPixelReader(),576, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage L = new WritableImage(moji.getPixelReader(),768, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage M = new WritableImage(moji.getPixelReader(),832, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage O = new WritableImage(moji.getPixelReader(),960, 220, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage P = new WritableImage(moji.getPixelReader(),0, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage R = new WritableImage(moji.getPixelReader(),128, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage S = new WritableImage(moji.getPixelReader(),192, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage T = new WritableImage(moji.getPixelReader(),256, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage U = new WritableImage(moji.getPixelReader(),320, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
-	public static final WritableImage V = new WritableImage(moji.getPixelReader(),384, 330, (int) (moji.getWidth() / 16), (int) (moji.getHeight() / 9));
 	// ミノ画像
 	public static final WritableImage minoBar = new WritableImage(tile_1.getPixelReader(),0, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
 	public static final WritableImage minoKagi1 = new WritableImage(tile_1.getPixelReader(),32, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
@@ -474,10 +457,17 @@ final class TetrisImage{
 		return resizedImage[index];
 	}
 
+	// 魔法（イオ）発動後の全パネル落下中のエフェクト
 	public WritableImage frameAnime() {
-		WritableImage[] resizedImage = new WritableImage[20];
-		resizedImage[0] = new WritableImage(frame.getPixelReader(),0, 0, (int) (frame.getWidth()), (int) (frame.getHeight() / 12));
-
+		WritableImage[] resizedImage = new WritableImage[8];
+		resizedImage[0] = new WritableImage(frame.getPixelReader(),0, 0, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
+		resizedImage[1] = new WritableImage(frame.getPixelReader(),0, 240, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
+		resizedImage[2] = new WritableImage(frame.getPixelReader(),0, 480, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
+		resizedImage[3] = new WritableImage(frame.getPixelReader(),0, 720, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
+		resizedImage[4] = new WritableImage(frame.getPixelReader(),0, 960, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
+		resizedImage[5] = new WritableImage(frame.getPixelReader(),0, 1200, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
+		resizedImage[6] = new WritableImage(frame.getPixelReader(),0, 1440, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
+		resizedImage[7] = new WritableImage(frame.getPixelReader(),0, 1680, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
 
 		int index = 0;
 		if (this.count >= resizedImage.length) {
