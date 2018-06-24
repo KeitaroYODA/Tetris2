@@ -72,6 +72,10 @@ final class TetrisImage{
 	}
 
 	// 主人公さんのモーション ///////////////////////////////////
+	// ミノ操作　
+	public static final WritableImage heroRight = new WritableImage(hero.getPixelReader(),480, 192, (int) (hero.getWidth() / 9), (int) (hero.getHeight() / 6));
+	public static final WritableImage heroLeft = new WritableImage(hero.getPixelReader(),480, 96, (int) (hero.getWidth() / 9), (int) (hero.getHeight() / 6));
+	
 	// ほうきに座って休息
 	public WritableImage heroAnime_1() {
 		WritableImage[] resizedImage = new WritableImage[4];

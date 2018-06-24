@@ -4,7 +4,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+
 public class Tetris_Obj {
+
+	// <TODO> 壁に接触時の中心軸の変更
+	// <TODO> T-SPINの導入
 
 	// ゲームステータス
 	private static final int GAME_INIT = 0; // 初期化
@@ -23,7 +27,9 @@ public class Tetris_Obj {
 
 	// フレーム間引き用」
 	private long execTime = System.nanoTime();
-
+	// ミノ接地後の操作可能時間カウンタ
+	private int colisionCount = 0;
+	
 	// ゲーム情報
 	private int gameStatus = GAME_INIT;
 	private int level = 1; // レベル
@@ -130,32 +136,14 @@ public class Tetris_Obj {
 	// ゲームメイン画面を表示
 	private void dispGameMain() {
 		this.message = Conf.MESSAGE_NONE;
-
+		
 		// ポーズ
 		if (GameLib.isKeyOn("P")) {
 			TetrisAudio.pause();
 			this.gameStatus = GAME_PAUSE;
 			return;
 		}
-		// ミノ操作
-		boolean isKeyOn = false;
-		if (GameLib.isKeyOn("L")) {
-			TetrisAudio.turn();
-			isKeyOn = true;
-			this.field.turnLeft();
-		}
-		if (GameLib.isKeyOn("D")) {
-			isKeyOn = true;
-			this.field.moveRight();
-		}
-		if (GameLib.isKeyOn("A")) {
-			isKeyOn = true;
-			this.field.moveLeft();
-		}
-		if (GameLib.isKeyOn("X")) {
-			isKeyOn = true;
-			this.field.moveDown();
-		}
+		
 		// 魔法使用
 		if (GameLib.isKeyOn("I")) {
 			if (this.mStock.getMagicNumIo() > 0) {
@@ -168,7 +156,7 @@ public class Tetris_Obj {
 				return;
 			}
 		}
-
+		
 		if (this.field.getMaxHeight() < 8) {
 			// ブロックが一定まで積みあがったらBGMテンポアップ
 			TetrisAudio.setBgmRate(1.2);
@@ -176,6 +164,28 @@ public class Tetris_Obj {
 		} else {
 			TetrisAudio.setBgmRate(1.0);
 			this.hero.setAction(Hero.HERO_ACTION_MAIN);
+		}
+		
+		// ミノ操作
+		boolean isKeyOn = false;
+		if (GameLib.isKeyOn("L")) {
+			TetrisAudio.turn();
+			isKeyOn = true;
+			this.field.turnLeft();
+		}
+		if (GameLib.isKeyOn("D")) {
+			isKeyOn = true;
+			this.field.moveRight();
+			//this.hero.setAction(Hero.HERO_ACTION_RIGHT);
+		}
+		if (GameLib.isKeyOn("A")) {
+			isKeyOn = true;
+			this.field.moveLeft();
+			//this.hero.setAction(Hero.HERO_ACTION_LEFT);
+		}
+		if (GameLib.isKeyOn("X")) {
+			isKeyOn = true;
+			this.field.moveDown();
 		}
 
 		// 現在のレベルに応じて落下のタイミングを変更する
@@ -190,16 +200,26 @@ public class Tetris_Obj {
 	private void colision() {
 		// ミノが床またはパネルに接地した
 		if (this.field.colision()) {
+			
+			// 接地後、少しだけ操作可能とする
+			if (this.colisionCount < Conf.WAIT_COLISION) {
+				this.colisionCount++;
+				return;
+			}
+			
 			TetrisAudio.colision();
+			this.gameStatus = GAME_MINO_CREATE;
+	
 			// 接地したミノをフィールドにセット
 			this.field.setMino2Field();
-
+			
 			// 行が揃っていれば削除
 			int deleteRows = this.field.checkDeleteRow();
 			if (deleteRows > 0) {
-				int crtLevel = this.level;
 				this.gameStatus = GAME_MINO_DELETE;
+				int crtLevel = this.level;
 				this.updateScore(deleteRows);
+				
 				if (this.level > crtLevel) {
 					this.hero.setAction(Hero.HERO_ACTION_LEVELUP);
 					// イオゲージ1回復、メラゲージ全回復
@@ -208,8 +228,6 @@ public class Tetris_Obj {
 				} else {
 					this.hero.setAction(Hero.HERO_ACTION_GUTS_1);
 				}
-			} else {
-				this.gameStatus = GAME_MINO_CREATE;
 			}
 		}
 	}
@@ -251,6 +269,8 @@ public class Tetris_Obj {
 
 	// 次に落下するミノを画面上部に出現させる
 	private void dispNextMino() {
+		this.colisionCount = 0;
+		
 		this.nextMino.init();
 		this.field.setMino(nextMino);
 		this.nextMino = Mino.getMino();

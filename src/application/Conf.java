@@ -26,6 +26,7 @@ final class Conf {
 	public static final int MAX_LEVEL = 10; // 最大レベル
 	public static final int LEVELUP_SCORE = 1000; // レベルアップ条件スコア
 	public static final long WAIT_NANOTIME = 100000000; // フレーム間引き用設定
+	public static final int WAIT_COLISION = 3; // ミノ接地後の操作可能時間
 	public static final int MAX_MSTOCK_IO = 3;
 	public static final int MAX_MSTOCK_MERA = 3;
 	// 魔法（メラ）用魔法陣の初期表示位置

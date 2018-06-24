@@ -192,7 +192,6 @@ final class Field {
 				}
 			}
 		}
-
 		return false;
 	}
 

@@ -19,6 +19,9 @@ final class Hero {
 	public static final int HERO_ACTION_GAMEOVER = 9;
 	public static final int HERO_ACTION_PANIC = 10;
 	public static final int HERO_ACTION_ALLDOWN = 11;
+	
+	public static final int HERO_ACTION_RIGHT = 12;
+	public static final int HERO_ACTION_LEFT = 13;
 
 	private static Hero hero = null;
 	private int action = HERO_ACTION_MENU;
@@ -93,8 +96,14 @@ final class Hero {
 		case HERO_ACTION_MAIN: // 通常（繰り返し）
 			canvas.drawImage(heroImage.heroAnime_7(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
-		case HERO_ACTION_ALLDOWN: // ワッショイ（繰り返し）
+		case HERO_ACTION_ALLDOWN: // 魔法（イオ）発動後のブロック落下中（繰り返し）
 			canvas.drawImage(heroImage.heroAnime_10(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
+			break;
+		case HERO_ACTION_RIGHT:
+			canvas.drawImage(TetrisImage.heroRight, Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
+			break;
+		case HERO_ACTION_LEFT:
+			canvas.drawImage(TetrisImage.heroLeft, Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		}
 	}
