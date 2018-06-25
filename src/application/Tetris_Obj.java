@@ -14,17 +14,17 @@ public class Tetris_Obj {
 	private static final int GAME_INIT = 0; // 初期化
 	private static final int GAME_MENU = 1; // スタート画面
 	private static final int GAME_MAIN = 2; // メインゲーム画面
-	private static final int GAME_MINO_CREATE = 3; // 新たなミノが上部に出現
-	private static final int GAME_PAUSE = 4; // ポーズ画面
-	private static final int GAME_OVER = 5; // ゲームオーバー画面
-	private static final int GAME_MAGIC_IO_SELECT = 6; // 魔法（イオ）発動準備中
-	private static final int GAME_MAGIC_MERA_SELECT = 7; // 魔法（メラ）発動準備中
-	private static final int GAME_MAGIC_IO_EXEC = 8; // 魔法（イオ）発動
-	private static final int GAME_MAGIC_MERA_EXEC = 9; // 魔法（メラ）発動
-	private static final int GAME_MINO_DELETE = 10; // ミノが設置時に揃った行を削除
+	private static final int GAME_PAUSE = 3; // ポーズ画面
+	private static final int GAME_OVER = 4; // ゲームオーバー画面
+	private static final int GAME_MINO_CREATE = 5; // 新たなミノが上部に出現
+	private static final int GAME_MINO_DELETE = 6; // ミノが設置時に揃った行を削除
+	private static final int GAME_MAGIC_IO_SELECT = 7; // 魔法（イオ）発動準備中
+	private static final int GAME_MAGIC_MERA_SELECT = 8; // 魔法（メラ）発動準備中
+	private static final int GAME_MAGIC_IO_EXEC = 9; // 魔法（イオ）発動
+	private static final int GAME_MAGIC_MERA_EXEC = 10; // 魔法（メラ）発動
 	private static final int GAME_RENSA_IO = 11; // 魔法（イオ）発動後の連鎖処理
-	private static final int GAME_RENSA_MERA = 13; // 魔法（イオ）発動後の連鎖処理
-	private static final int GAME_RENSA_IO_DELETE = 12; // 魔法（イオ）発動後に揃った行を削除
+	private static final int GAME_RENSA_MERA = 12; // 魔法（イオ）発動後の連鎖処理
+	private static final int GAME_RENSA_IO_DELETE = 13; // 魔法（イオ）発動後に揃った行を削除
 	private static final int GAME_RENSA_MERA_DELETE = 14; // 魔法（メラ）発動後に揃った行を削除
 
 	private long execTime = System.nanoTime(); // フレーム間引き用」
@@ -36,7 +36,7 @@ public class Tetris_Obj {
 	private int gameStatus = GAME_INIT;
 	private int level = 1; // レベル
 	private int score = 0; // スコア
-	private String message = ""; // メイン画面に表示されるメッセージ
+	private String message = Conf.MESSAGE_NONE; // メイン画面に表示されるメッセージ
 
 	private Field field; // ミノ表示領域
 	private Hero hero; // 主人公さん
@@ -46,6 +46,7 @@ public class Tetris_Obj {
 	// このメソッドが1秒間に60回ぐらい呼ばれるので
 	// テトリスの内部処理をここに書く
 	public void update() {
+		// フレーム間引き処理
 		if (this.isSkip()) {
 			return;
 		}
@@ -192,6 +193,7 @@ public class Tetris_Obj {
 
 	// 衝突判定をおこなう。行が揃っていれば削除する
 	private void colision() {
+		
 		// ミノが床またはパネルに接地した
 		if (this.field.colision()) {
 
@@ -338,7 +340,7 @@ public class Tetris_Obj {
 			return;
 		}
 
-		if (this.field.allDownMera()) {
+		if (this.field.allDown(Magic.MAGIC_ACTION_MERA)) {
 			this.gameStatus = GAME_RENSA_MERA;
 			this.hero.setAction(Hero.HERO_ACTION_ALLDOWN);
 			this.field.getMagic().setAction(Magic.MAGIC_ACTION_FRAME_MERA);
@@ -363,7 +365,7 @@ public class Tetris_Obj {
 			return;
 		}
 
-		if (this.field.allDown()) {
+		if (this.field.allDown(Magic.MAGIC_ACTION_IO)) {
 			this.gameStatus = GAME_RENSA_IO;
 			this.hero.setAction(Hero.HERO_ACTION_ALLDOWN);
 			this.field.getMagic().setAction(Magic.MAGIC_ACTION_FRAME);
@@ -507,9 +509,9 @@ public class Tetris_Obj {
 	// メッセージの表示
 	private void showMessage(GraphicsContext canvas) {
 		canvas.setFill(Color.WHITE);
-		canvas.setFont(new Font("メイリオ", Conf.PANEL_W * 2));
+		canvas.setFont(new Font("游ゴシック体", Conf.MESSAGE_W));
 		canvas.setTextAlign(TextAlignment.CENTER);
-		canvas.fillText(this.message, Conf.PANEL_W * 8, Conf.PANEL_H * 6);
+		canvas.fillText(this.message, Conf.MESSAGE_X, Conf.MESSAGE_Y);
 	}
 
 	// 次のミノ表示
@@ -525,7 +527,7 @@ public class Tetris_Obj {
 	private void showScore(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(Conf.SCORE_X, Conf.SCORE_Y, Conf.SCORE_W, Conf.SCORE_H);
-		canvas.setFont(new Font("メイリオ", Conf.PANEL_W));
+		canvas.setFont(new Font("游ゴシック体", Conf.PANEL_W));
 		canvas.setTextAlign(TextAlignment.LEFT);
 		canvas.setFill(Color.WHITE);
 		canvas.fillText("Score ： " + this.score, Conf.SCORE_X + (Conf.PANEL_W * 1), Conf.SCORE_Y + (Conf.PANEL_H * 1.5));
@@ -535,7 +537,7 @@ public class Tetris_Obj {
 	private void showLevel(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(Conf.LEVEL_X, Conf.LEVEL_Y, Conf.LEVEL_W, Conf.LEVEL_H);
-		canvas.setFont(new Font("メイリオ", Conf.PANEL_W));
+		canvas.setFont(new Font("游ゴシック体", Conf.PANEL_W));
 		canvas.setTextAlign(TextAlignment.LEFT);
 		canvas.setFill(Color.WHITE);
 		canvas.fillText("Level ： " + this.level, Conf.LEVEL_X + (Conf.PANEL_W * 1), Conf.LEVEL_Y + (Conf.PANEL_H * 1.5));
@@ -546,7 +548,7 @@ public class Tetris_Obj {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(Conf.INFO_X, Conf.INFO_Y, Conf.INFO_W, Conf.INFO_H);
 		canvas.setTextAlign(TextAlignment.LEFT);
-		canvas.setFont(new Font("メイリオ", Conf.PANEL_W / 2));
+		canvas.setFont(new Font("游ゴシック体", Conf.PANEL_W / 2));
 		canvas.setFill(Color.WHITE);
 
 		String message;

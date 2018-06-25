@@ -11,22 +11,39 @@ final class Magic {
 	public static final int MAGIC_ACTION_FRAME = 3; // 魔法（イオ）発動後の全パネル落下中のエフェクト表示
 	public static final int MAGIC_ACTION_MERA_SELECT = 4; // 魔法（メラ）発動準備中エフェクト表示
 	public static final int MAGIC_ACTION_MERA = 5; // 魔法（メラ）発動エフェクト表示
-	public static final int MAGIC_ACTION_FRAME_MERA = 6;
+	public static final int MAGIC_ACTION_FRAME_MERA = 6; // 魔法（メラ）発動後の全パネル落下中のエフェクト表示
 
 	// 魔法（メラ）の効果範囲
 	private static final int COL = Conf.MAGIC_COL; // 列数
 	private static final int ROW = Conf.MAGIC_ROW; // 行数
 	private int[][] cursorArray = new int[ROW][COL];
 
+	// 魔法エフェクト表示用
 	private TetrisImage magicImage = new TetrisImage();
 
 	// 魔法発動位置選択カーソル座標
-	private int cursorX;
-	private int cursorY;
+	private int cursorX = Conf.MAGIC_CIRCLE_X;
+	private int cursorY = Conf.MAGIC_CIRCLE_Y;
 	private double cursorW = Conf.PANEL_W * COL;
 	private double cursorH = Conf.PANEL_H * ROW;
-	private int action;
+	private int action = MAGIC_ACTION_NONE;
 	private static Magic magic;
+
+	public static Magic getInstance() {
+		if (magic == null) {
+			magic = new Magic();
+		}
+		return magic;
+	}
+
+	private Magic() {
+		initCursor();
+		for (int i = 0; i < ROW; i++) {
+			for (int l = 0; l < COL; l++) {
+				this.cursorArray[i][l] = 1;
+			}
+		}
+	}
 
 	// 表示させるアクションを設定
 	public void setAction(int action) {
@@ -39,24 +56,7 @@ final class Magic {
 	public int getAction() {
 		return this.action;
 	}
-
-	private Magic() {
-		initCursor();
-
-		for (int i = 0; i < ROW; i++) {
-			for (int l = 0; l < COL; l++) {
-				this.cursorArray[i][l] = 1;
-			}
-		}
-	}
-
-	public static Magic getInstance() {
-		if (magic == null) {
-			magic = new Magic();
-		}
-		return magic;
-	}
-
+	
 	public void initCursor() {
 		cursorX = Conf.MAGIC_CIRCLE_X;
 		cursorY = Conf.MAGIC_CIRCLE_Y;
@@ -135,7 +135,7 @@ final class Magic {
 		case MAGIC_ACTION_MERA:
 			canvas.drawImage(this.magicImage.bombAnime(),x, y, w, h);
 			break;
-		default:
+		case MAGIC_ACTION_NONE:
 			// 表示しない
 			break;
 		}

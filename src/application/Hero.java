@@ -51,7 +51,7 @@ final class Hero {
 	}
 
 	private void showMessage(GraphicsContext canvas, String message) {
-		canvas.setFont(new Font("メイリオ", Conf.PANEL_W));
+		canvas.setFont(new Font("游ゴシック体", Conf.PANEL_W));
 		canvas.setTextAlign(TextAlignment.LEFT);
 		canvas.setFill(Color.WHITE);
 		canvas.fillText(message, Conf.HERO_X + (Conf.PANEL_W * 1), Conf.HERO_Y + (Conf.PANEL_H * 1));

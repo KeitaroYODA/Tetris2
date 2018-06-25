@@ -73,7 +73,7 @@ final class Field {
 	}
 
 	// ミノを右に移動させる
-	protected void moveRight() {
+	public void moveRight() {
 		int minoX = this.mino.getX();
 		minoX++;
 
@@ -100,7 +100,7 @@ final class Field {
 	}
 
 	// ミノを左に移動させる
-	protected void moveLeft() {
+	public void moveLeft() {
 		int minoX = this.mino.getX();
 		minoX--;
 
@@ -126,10 +126,8 @@ final class Field {
 	}
 
 	// ミノを回転
-	protected void turnLeft() {
-
+	public void turnLeft() {
 		int direction = this.mino.getDirection();
-
 		direction--;
 		if (direction < 1) {
 			direction = 4;
@@ -196,7 +194,6 @@ final class Field {
 
 	// 積みあがったパネルが揃っていれば揃った行数を返す
 	public int checkDeleteRow() {
-
 		int checkNum = 0;
 		boolean check = false;
 
@@ -213,119 +210,14 @@ final class Field {
 				checkNum++;
 			}
 		}
-
 		return checkNum;
 	}
-
-	// 削除された行の上にあるブロックを落とす
-	public void rowDown() {
-
-		int index = ROW - 1;
-		Panel[][] editArray = new Panel[ROW][COL];
-
-		// 下から揃っているかチェック
-		for (int row = (ROW - 1); row > 0; row--) {
-			boolean check = false;
-			for (int col = 0; col < COL; col++) {
-				if (this.panelArray[row][col] != null) {
-					check = true;
-				}
-			}
-
-			// 空洞の行を埋める
-			if (check) {
-				for (int col = 0; col < COL; col++) {
-					editArray[index][col] = this.panelArray[row][col];
-				}
-				index--;
-			}
-		}
-		this.panelArray = editArray;
-	}
-
-	// フィールド上のパネルをすべて落下させる。イオ発動時に呼び出される
-	public boolean allDownMera() {
-		Panel[][] editArray = new Panel[ROW][COL];
-		boolean result = false;
-
-		for (int i = 0; i < ROW; i++) {
-			for (int l = 0; l < COL; l++) {
-				editArray[i][l] = null;
-			}
-		}
-
-		for (int row = (ROW - 1); row > 0; row--) {
-			for (int col = 0; col < COL; col++) {
-
-				if (this.panelArray[row][col] != null) {
-
-					// メラ実行時には指定しされた範囲のみ落とす
-					if (!this.magic.inCursor(col, row)) {
-						editArray[row][col] = this.panelArray[row][col];
-						//continue;
-					} else {
-
-						int index = row + 1;
-
-						// 既に床に接地している場合
-						if (index == ROW) {
-							// 移動させない
-							editArray[row][col] = this.panelArray[row][col];
-						} else if (editArray[index][col] != null) {
-							// ほかのパネルに衝突した場合も移動させない
-							editArray[row][col] = this.panelArray[row][col];
-						} else {
-							editArray[index][col] = this.panelArray[row][col];
-							result = true;
-						}
-					}
-				}
-
-			}
-		}
-		this.panelArray = editArray;
-		return result;
-	}
-
-	// フィールド上のパネルをすべて落下させる。イオ発動時に呼び出される
-	public boolean allDown() {
-		Panel[][] editArray = new Panel[ROW][COL];
-		boolean result = false;
-
-		for (int i = 0; i < ROW; i++) {
-			for (int l = 0; l < COL; l++) {
-				editArray[i][l] = null;
-			}
-		}
-
-		for (int row = (ROW - 1); row > 0; row--) {
-			for (int col = 0; col < COL; col++) {
-
-				if (this.panelArray[row][col] != null) {
-					int index = row + 1;
-
-					// 既に床に接地している場合
-					if (index == ROW) {
-						// 移動させない
-						editArray[row][col] = this.panelArray[row][col];
-					} else if (editArray[index][col] != null) {
-						// ほかのパネルに衝突した場合も移動させない
-						editArray[row][col] = this.panelArray[row][col];
-					} else {
-						editArray[index][col] = this.panelArray[row][col];
-						result = true;
-					}
-				}
-
-			}
-		}
-		this.panelArray = editArray;
-		return result;
-	}
-
+	
 	// 魔法陣で指定された範囲のパネルを削除する。魔法（メラ）実行時に呼び出される
+	// 削除したパネル数を返す
 	public int deletePanels() {
 		int row, col, deletePanels = 0;
+		
 		for (int i = 0; i < Magic.ROW(); i++) {
 			for (int l = 0; l < Magic.COL(); l++) {
 				row = this.magic.cursorY() + i;
@@ -357,6 +249,75 @@ final class Field {
 				}
 			}
 		}
+	}
+	
+	// 削除された行の上にあるブロックを落とす
+	public void rowDown() {
+		int index = ROW - 1;
+		Panel[][] editArray = new Panel[ROW][COL];
+
+		// 下から揃っているかチェック
+		for (int row = (ROW - 1); row > 0; row--) {
+			boolean check = false;
+			for (int col = 0; col < COL; col++) {
+				if (this.panelArray[row][col] != null) {
+					check = true;
+				}
+			}
+
+			// 空洞の行を埋める
+			if (check) {
+				for (int col = 0; col < COL; col++) {
+					editArray[index][col] = this.panelArray[row][col];
+				}
+				index--;
+			}
+		}
+		this.panelArray = editArray;
+	}
+
+	// フィールド上のパネルをすべて落下させる。イオ発動時に呼び出される
+	// 落下するパネルがあった場合真を返す
+	public boolean allDown(int magicAction) {
+		Panel[][] editArray = new Panel[ROW][COL];
+		boolean result = false;
+
+		for (int i = 0; i < ROW; i++) {
+			for (int l = 0; l < COL; l++) {
+				editArray[i][l] = null;
+			}
+		}
+
+		for (int row = (ROW - 1); row > 0; row--) {
+			for (int col = 0; col < COL; col++) {
+
+				if (this.panelArray[row][col] != null) {
+					// メラ実行時には指定しされた範囲のみ落とす
+					if (magicAction == Magic.MAGIC_ACTION_MERA) {
+						if (!this.magic.inCursor(col, row)) {
+							editArray[row][col] = this.panelArray[row][col];
+							continue;
+						}
+					}
+
+					int index = row + 1;
+					// 既に床に接地している場合
+					if (index == ROW) {
+						// 移動させない
+						editArray[row][col] = this.panelArray[row][col];
+					} else if (editArray[index][col] != null) {
+						// ほかのパネルに衝突した場合も移動させない
+						editArray[row][col] = this.panelArray[row][col];
+					} else {
+						editArray[index][col] = this.panelArray[row][col];
+						result = true;
+					}
+				}
+
+			}
+		}
+		this.panelArray = editArray;
+		return result;
 	}
 
 	// 積みあがっているミノの高さを返す

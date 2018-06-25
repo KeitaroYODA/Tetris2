@@ -37,8 +37,8 @@ abstract class Mino implements Cloneable{
 
 	// ミノの表示位置を初期化
 	public void init() {
-		this.x = 6;
-		this.y = 0;
+		this.x = Conf.MINO_X;
+		this.y = Conf.MINO_Y;
 	}
 
 	// ミノを構成するパネル配列の初期化
@@ -83,7 +83,6 @@ abstract class Mino implements Cloneable{
 
 		for (int row = 0; row < ROW; row++) {
 			for (int col = 0; col < COL; col++) {
-
 				double x = (col + this.x) * Conf.PANEL_W + Conf.FIELD_X;
 				double y = (row + this.y) * Conf.PANEL_H + Conf.FIELD_Y;
 				double w = Conf.PANEL_W;

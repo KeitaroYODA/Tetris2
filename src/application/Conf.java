@@ -4,7 +4,7 @@ final class Conf {
 	// メッセージ関連 ///////////////////////////////////////
 	// メイン画面上に表示されるメッセージ
 	public static final String MESSAGE_NONE = "";
-	public static final String MESSAGE_MENU = "SMILE TETLIS";
+	public static final String MESSAGE_MENU = "SMILE  TETRIS";
 	public static final String MESSAGE_PAUSE = "PAUSE...";
 	public static final String MESSAGE_GAMEOVER = "GAME OVER!!";
 	// 画面右下に表示されるインフォメーション
@@ -29,24 +29,26 @@ final class Conf {
 	// 魔法（メラ）用魔法陣の初期表示位置
 	public static final int MAGIC_CIRCLE_X = 7;
 	public static final int MAGIC_CIRCLE_Y = 7;
-
-	// 画面レイアウト ///////////////////////////////////////
+	// ミノの初期表示位置
+	public static final int MINO_X = 6;
+	public static final int MINO_Y = 0;
+	// 配列サイズ
 	// メインフィールド
 	public static final int FIELD_ROW = 18;
 	public static final int FIELD_COL = 16;
 	// メラ魔法陣
 	public static final int MAGIC_ROW = 3;
 	public static final int MAGIC_COL = 3;
-
+	
+	// 画面レイアウト ///////////////////////////////////////
 	// ミノ構成するパネルサイズ
 	public static final double PANEL_W = GameLib.width() / 33;
 	public static final double PANEL_H = GameLib.height() / 19;
 	// メッセージ画像
-	public static final double MESSAGE_X = PANEL_W * 2;
-	public static final double MESSAGE_Y = PANEL_H * 4;
-	public static final double MESSAGE_W = PANEL_W * 1.3;
+	public static final double MESSAGE_X = PANEL_W * 9;
+	public static final double MESSAGE_Y = PANEL_H * 5;
+	public static final double MESSAGE_W = PANEL_W * 2;
 	public static final double MESSAGE_H = PANEL_H * 3;
-	public static final double MESSAGE_C = PANEL_W / 10;
 	// メイン画面表示
 	public static final double FIELD_X = PANEL_W;
 	public static final double FIELD_Y = 0;
