@@ -21,8 +21,8 @@ final class MStock {
 	private MStock() {}
 
 	public void init() {
-		magicNumMera = Conf.MAX_MSTOCK_MERA;
-		magicNumIo = Conf.MAX_MSTOCK_IO;
+		this.magicNumMera = Conf.MAX_MSTOCK_MERA;
+		this.magicNumIo = Conf.MAX_MSTOCK_IO;
 	}
 
 	public static MStock getInstance() {

@@ -7,9 +7,6 @@ final class Conf {
 	public static final String MESSAGE_MENU = "SMILE TETLIS";
 	public static final String MESSAGE_PAUSE = "PAUSE...";
 	public static final String MESSAGE_GAMEOVER = "GAME OVER!!";
-	public static final String MESSAGE_MERA = "";
-	public static final String MESSAGE_RENSA = "";
-	public static final String MESSAGE_IO = "";
 	// 画面右下に表示されるインフォメーション
 	public static final String INFO_NONE = "";
 	public static final String INFO_MENU = "ENTER : ゲーム開始";
@@ -21,19 +18,26 @@ final class Conf {
 	public static final String INFO_RENSA = "Please Wait.....";
 
 	// ゲーム設定 ///////////////////////////////////////
-	public static final int ALL_DOWN_WAIT = 6; // イオ発動後のブロック落下待ち時間（値が少ない程速く落ちる）
+	public static final int DOWN_WAIT = 6; // 魔法後のブロック落下待ち時間（値が少ない程速く落ちる）
 	public static final int MAX_SCORE = 100000; // 最大スコア
 	public static final int MAX_LEVEL = 10; // 最大レベル
 	public static final int LEVELUP_SCORE = 1000; // レベルアップ条件スコア
 	public static final long WAIT_NANOTIME = 100000000; // フレーム間引き用設定
-	public static final int WAIT_COLISION = 3; // ミノ接地後の操作可能時間
-	public static final int MAX_MSTOCK_IO = 3;
-	public static final int MAX_MSTOCK_MERA = 3;
+	public static final int WAIT_COLISION = 3; // ミノ接地後の操作可能時間（値が少ない程余裕がなくなる）
+	public static final int MAX_MSTOCK_IO = 3; // 魔法（イオ）最大ストック可能数
+	public static final int MAX_MSTOCK_MERA = 3; // 魔法（メラ）最大ストック可能数
 	// 魔法（メラ）用魔法陣の初期表示位置
 	public static final int MAGIC_CIRCLE_X = 7;
 	public static final int MAGIC_CIRCLE_Y = 7;
 
 	// 画面レイアウト ///////////////////////////////////////
+	// メインフィールド
+	public static final int FIELD_ROW = 18;
+	public static final int FIELD_COL = 16;
+	// メラ魔法陣
+	public static final int MAGIC_ROW = 3;
+	public static final int MAGIC_COL = 3;
+
 	// ミノ構成するパネルサイズ
 	public static final double PANEL_W = GameLib.width() / 33;
 	public static final double PANEL_H = GameLib.height() / 19;
@@ -77,5 +81,6 @@ final class Conf {
 	public static final double MSTOCK_W = PANEL_W * 7;
 	public static final double MSTOCK_H = PANEL_H * 4;
 
-	private Conf() {}
+	private Conf() {
+	}
 }

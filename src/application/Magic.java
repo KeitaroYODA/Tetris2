@@ -8,13 +8,14 @@ final class Magic {
 	public static final int MAGIC_ACTION_NONE = 0; // 表示なし
 	public static final int MAGIC_ACTION_IO_SELECT = 1; // 魔法（イオ）発動準備中エフェクト表示
 	public static final int MAGIC_ACTION_IO = 2; // 魔法（イオ）発動エフェクト表示
-	public static final int MAGIC_ACTION_FRAME = 5; // 魔法（イオ）発動後の全パネル落下中のエフェクト表示
-	public static final int MAGIC_ACTION_MERA_SELECT = 3; // 魔法（メラ）発動準備中エフェクト表示
-	public static final int MAGIC_ACTION_MERA = 4; // 魔法（メラ）発動エフェクト表示
+	public static final int MAGIC_ACTION_FRAME = 3; // 魔法（イオ）発動後の全パネル落下中のエフェクト表示
+	public static final int MAGIC_ACTION_MERA_SELECT = 4; // 魔法（メラ）発動準備中エフェクト表示
+	public static final int MAGIC_ACTION_MERA = 5; // 魔法（メラ）発動エフェクト表示
+	public static final int MAGIC_ACTION_FRAME_MERA = 6;
 
 	// 魔法（メラ）の効果範囲
-	private static final int COL = 3; // 列数
-	private static final int ROW = 3; // 行数
+	private static final int COL = Conf.MAGIC_COL; // 列数
+	private static final int ROW = Conf.MAGIC_ROW; // 行数
 	private int[][] cursorArray = new int[ROW][COL];
 
 	private TetrisImage magicImage = new TetrisImage();
@@ -26,13 +27,17 @@ final class Magic {
 	private double cursorH = Conf.PANEL_H * ROW;
 	private int action;
 	private static Magic magic;
-	
+
 	// 表示させるアクションを設定
 	public void setAction(int action) {
 		if (this.action != action) {
 			this.magicImage.init();
 		}
 		this.action = action;
+	}
+
+	public int getAction() {
+		return this.action;
 	}
 
 	private Magic() {
@@ -51,7 +56,7 @@ final class Magic {
 		}
 		return magic;
 	}
-	
+
 	public void initCursor() {
 		cursorX = Conf.MAGIC_CIRCLE_X;
 		cursorY = Conf.MAGIC_CIRCLE_Y;
@@ -85,6 +90,20 @@ final class Magic {
 		}
 	}
 
+	// 指定された座標がカーソル内であるかチェック
+	public boolean inCursor(int x, int y) {
+		boolean result = false;
+		for (int i = 0; i < ROW; i++) {
+			for (int l = 0; l < COL; l++) {
+
+				if ((this.cursorY + i > y) && (this.cursorX + l) == x) {
+					result = true;
+				}
+			}
+		}
+		return result;
+	}
+
 	public boolean animeIsEnd() {
 		return magicImage.isEnd();
 	}
@@ -99,13 +118,16 @@ final class Magic {
 
 		switch(this.action) {
 		case MAGIC_ACTION_IO_SELECT:
-			canvas.drawImage(this.magicImage.magicFlameEffectAnime(), Conf.PANEL_W, 0, Conf.PANEL_W * Field.COL(), Conf.PANEL_H * Field.ROW());
+			canvas.drawImage(this.magicImage.magicFlameEffectAnime(), Conf.FIELD_X, Conf.FIELD_Y, Conf.PANEL_W * Field.COL(), Conf.PANEL_H * Field.ROW());
 			break;
 		case MAGIC_ACTION_IO:
-			canvas.drawImage(this.magicImage.magicIoAnime(), Conf.PANEL_W, 0, Conf.PANEL_W * Field.COL(), Conf.PANEL_H * Field.ROW());
+			canvas.drawImage(this.magicImage.magicIoAnime(), Conf.FIELD_X, Conf.FIELD_Y, Conf.PANEL_W * Field.COL(), Conf.PANEL_H * Field.ROW());
 			break;
 		case MAGIC_ACTION_FRAME:
-			canvas.drawImage(this.magicImage.frameAnime(), Conf.PANEL_W, (Conf.PANEL_H * Field.ROW()) - ((Conf.PANEL_H * Field.ROW()) / 4), Conf.PANEL_W * Field.COL(), (Conf.PANEL_H * Field.ROW()) / 4);
+			canvas.drawImage(this.magicImage.frameAnime(), Conf.FIELD_X, (Conf.PANEL_H * Field.ROW()) - ((Conf.PANEL_H * Field.ROW()) / 4) + Conf.FIELD_Y, Conf.PANEL_W * Field.COL(), (Conf.PANEL_H * Field.ROW()) / 4);
+			break;
+		case MAGIC_ACTION_FRAME_MERA:
+			canvas.drawImage(this.magicImage.frameAnime(), ((Conf.PANEL_W * this.cursorX) + Conf.FIELD_X), (Conf.PANEL_H * Field.ROW()) - ((Conf.PANEL_H * Field.ROW()) / 4) + Conf.FIELD_Y, Conf.PANEL_W * Magic.COL(), (Conf.PANEL_H * Field.ROW()) / 4);
 			break;
 		case MAGIC_ACTION_MERA_SELECT:
 			canvas.drawImage(this.magicImage.magicCircle(),x, y, w, h);

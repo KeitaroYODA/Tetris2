@@ -18,6 +18,7 @@ final class TetrisImage{
 	private static final Image kaenbeam = new Image(new File("res/image/kaenbeam.png").toURI().toString()); // 魔法（イオ）発動
 	private static final Image hiteffects = new Image(new File("res/image/hiteffects.png").toURI().toString());
 	private static final Image frame = new Image(new File("res/image/frame.png").toURI().toString());
+	private static final Image bomb = new Image(new File("res/image/bomb.png").toURI().toString());
 
 	public TetrisImage() {
 		this.init();
@@ -75,7 +76,7 @@ final class TetrisImage{
 	// ミノ操作　
 	public static final WritableImage heroRight = new WritableImage(hero.getPixelReader(),480, 192, (int) (hero.getWidth() / 9), (int) (hero.getHeight() / 6));
 	public static final WritableImage heroLeft = new WritableImage(hero.getPixelReader(),480, 96, (int) (hero.getWidth() / 9), (int) (hero.getHeight() / 6));
-	
+
 	// ほうきに座って休息
 	public WritableImage heroAnime_1() {
 		WritableImage[] resizedImage = new WritableImage[4];
@@ -392,6 +393,42 @@ final class TetrisImage{
 
 		return resizedImage[index];
 	}
+
+	/*
+	public WritableImage bombAnime() {
+		WritableImage[] resizedImage = new WritableImage[10];
+		resizedImage[0] = new WritableImage(bomb.getPixelReader(),0, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[1] = new WritableImage(bomb.getPixelReader(),180, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[2] = new WritableImage(bomb.getPixelReader(),360, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[3] = new WritableImage(bomb.getPixelReader(),540, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[4] = new WritableImage(bomb.getPixelReader(),720, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[5] = new WritableImage(bomb.getPixelReader(),900, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[6] = new WritableImage(bomb.getPixelReader(),1080, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[7] = new WritableImage(bomb.getPixelReader(),1260, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[8] = new WritableImage(bomb.getPixelReader(),1440, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+		resizedImage[9] = new WritableImage(bomb.getPixelReader(),1620, 0, (int) (bomb.getWidth() / 10), (int) bomb.getHeight());
+
+		int index;
+		if (!this.isEnd) {
+			index = this.count;
+			this.count++;
+		} else {
+			index = resizedImage.length - 1;
+		}
+
+		// アニメの再生が終わった
+		if (this.count == resizedImage.length) {
+			this.isEnd = true;
+		}
+
+		// 音を鳴らす
+		if (index == 6) {
+			TetrisAudio.mera();
+		}
+
+		return resizedImage[index];
+	}
+	*/
 
 	// 炎全画面エフェクト　魔法（イオ）準備中
 	public WritableImage magicFlameEffectAnime() {
