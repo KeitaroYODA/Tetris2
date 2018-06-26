@@ -41,8 +41,6 @@ public class Tetris_Obj {
 	private Field field; // ミノ表示領域
 	private Hero hero; // 主人公さん
 	private MStock mStock; // 魔法残弾
-	private Mino nextMino; // 次に表示されるミノ
-
 	private Mino nextMino_1; // 次に表示されるミノ
 	private Mino nextMino_2; // 次の次に表示されるミノ
 
@@ -171,36 +169,9 @@ public class Tetris_Obj {
 		// ミノ操作
 		boolean isKeyOn = false;
 		if (GameLib.isKeyOn("L")) {
-			TetrisAudio.turn();
 			isKeyOn = true;
-
-			// あと現在のdirectionの値によって振る舞いを変える必要がある
-			boolean result = false;
-			result = this.field.turnLeft();
-
-			// 回転できない場合補正した値を使って再度回転を試行する
-			if (!result) {
-				for (int i = 0; i < Mino.CORRECTIONS; i++) {
-					int x = this.field.getMino().getX();
-					int y = this.field.getMino().getY();
-
-					int ex = x + this.field.getMino().correctionLeftArray[this.field.getMino().getDirection()][i][Mino.CORRECTION_X];
-					int ey = y + this.field.getMino().correctionLeftArray[this.field.getMino().getDirection()][i][Mino.CORRECTION_Y];
-					this.field.getMino().setX(ex);
-					this.field.getMino().setY(ey);
-
-					result = this.field.turnLeft();
-					if (result) {
-						break;
-					} else {
-						this.field.getMino().setX(x);
-						this.field.getMino().setY(y);
-					}
-				}
-
-			}
+			this.turnLeft();
 		}
-
 		if (GameLib.isKeyOn("D")) {
 			isKeyOn = true;
 			this.field.moveRight();
@@ -222,6 +193,36 @@ public class Tetris_Obj {
 		this.minoDownCount++;
 	}
 
+	// ミノを回転（左）
+	private void turnLeft() {
+		boolean result = this.field.turnLeft();
+		
+		// 回転できない場合補正した値を使って再度回転を試行する
+		if (!result) {
+			for (int i = 0; i < Mino.CORRECTIONS; i++) {
+				int x = this.field.getMino().getX();
+				int y = this.field.getMino().getY();
+
+				// 補正値を取得してミノにセット
+				int ex = x + this.field.getMino().correctionLeftArray[this.field.getMino().getDirection()][i][Mino.CORRECTION_X];
+				int ey = y + this.field.getMino().correctionLeftArray[this.field.getMino().getDirection()][i][Mino.CORRECTION_Y];
+				this.field.getMino().setX(ex);
+				this.field.getMino().setY(ey);
+
+				// ミノの回転を再試行
+				result = this.field.turnLeft();
+				if (result) {
+					// 回転できたら終了
+					return;
+				} else {
+					// 回転できなかったらXYの値を元に戻す
+					this.field.getMino().setX(x);
+					this.field.getMino().setY(y);
+				}
+			}
+		}
+	}
+	
 	// 衝突判定をおこなう。行が揃っていれば削除する
 	private void colision() {
 
