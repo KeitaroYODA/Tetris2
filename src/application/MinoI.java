@@ -15,14 +15,14 @@ class MinoI extends Mino {
 		this.panel = new Panel(TetrisImage.minoI);
 
 		// [ミノの向き][補正する回数][補正内容 0:X、1:Y]
-		correctionLeftArray[DIRECTION_NORMAL][0][0] = -1;
-		correctionLeftArray[DIRECTION_NORMAL][0][1] = 0;
-		correctionLeftArray[DIRECTION_NORMAL][1][0] = 2;
-		correctionLeftArray[DIRECTION_NORMAL][1][1] = 0;
-		correctionLeftArray[DIRECTION_REVERCE][0][0] = -1;
-		correctionLeftArray[DIRECTION_REVERCE][0][1] = 0;
-		correctionLeftArray[DIRECTION_REVERCE][1][0] = 2;
-		correctionLeftArray[DIRECTION_REVERCE][1][1] = 0;
+		correctionLeftArray[DIRECTION_NORMAL][0][CORRECTION_X] = -1;
+		correctionLeftArray[DIRECTION_NORMAL][0][CORRECTION_Y] = 0;
+		correctionLeftArray[DIRECTION_NORMAL][1][CORRECTION_X] = 2;
+		correctionLeftArray[DIRECTION_NORMAL][1][CORRECTION_Y] = 0;
+		correctionLeftArray[DIRECTION_REVERCE][0][CORRECTION_X] = -1;
+		correctionLeftArray[DIRECTION_REVERCE][0][CORRECTION_Y] = 0;
+		correctionLeftArray[DIRECTION_REVERCE][1][CORRECTION_X] = 2;
+		correctionLeftArray[DIRECTION_REVERCE][1][CORRECTION_Y] = 0;
 	}
 
 	// ミノを回転
