@@ -18,6 +18,10 @@ final class Field {
 	private Magic magic = Magic.getInstance();
 	private TetrisImage image = new TetrisImage();
 
+	public Mino getMino() {
+		return this.mino;
+	}
+
 	public static Field getInstance() {
 		if (field == null) {
 			field = new Field();
@@ -126,11 +130,12 @@ final class Field {
 	}
 
 	// ミノを回転
-	public void turnLeft() {
+	public boolean turnLeft() {
+
 		int direction = this.mino.getDirection();
 		direction--;
-		if (direction < 1) {
-			direction = 4;
+		if (direction < 0) {
+			direction = 3;
 		}
 		this.mino.setDirection(direction);
 		this.mino.turn();
@@ -145,26 +150,30 @@ final class Field {
 				if (minoPanelArray[i][l] == 1) {
 					if (row >= Field.ROW || col < 0 || col >= Field.COL) {
 						direction++;
-						if (direction > 4) {
-							direction = 1;
+						if (direction > 3) {
+							direction = 0;
 						}
 						this.mino.setDirection(direction);
 						this.mino.turn();
-						return;
+						return false;
+						//return;
 					}
+
 					// パネルに衝突した
 					if (this.panelArray[row][col] != null) {
 						direction++;
-						if (direction > 4) {
-							direction = 1;
+						if (direction > 3) {
+							direction = 0;
 						}
 						this.mino.setDirection(direction);
 						this.mino.turn();
-						return;
+						return false;
+						//return;
 					}
 				}
 			}
 		}
+		return true;
 	}
 
 	// ミノの衝突判定
@@ -212,12 +221,12 @@ final class Field {
 		}
 		return checkNum;
 	}
-	
+
 	// 魔法陣で指定された範囲のパネルを削除する。魔法（メラ）実行時に呼び出される
 	// 削除したパネル数を返す
 	public int deletePanels() {
 		int row, col, deletePanels = 0;
-		
+
 		for (int i = 0; i < Magic.ROW(); i++) {
 			for (int l = 0; l < Magic.COL(); l++) {
 				row = this.magic.cursorY() + i;
@@ -250,7 +259,7 @@ final class Field {
 			}
 		}
 	}
-	
+
 	// 削除された行の上にあるブロックを落とす
 	public void rowDown() {
 		int index = ROW - 1;
@@ -402,6 +411,9 @@ final class Field {
 				canvas.setFill(Color.BLACK);
 				canvas.fillRect(x, y, w, h);
 
+				//canvas.setFill(Color.DARKGRAY);
+				//canvas.fillRect(x, y, w-1, h-1);
+
 				if (this.panelArray[i][l] != null) {
 					canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
 				}
@@ -410,7 +422,7 @@ final class Field {
 
 		// 落下中のミノを表示
 		if (this.mino != null) {
-			this.mino.show(canvas);
+			this.mino.show(canvas, false);
 		}
 
 		// 消滅エフェクトを表示

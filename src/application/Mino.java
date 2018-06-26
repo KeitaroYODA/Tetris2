@@ -1,12 +1,21 @@
 package application;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 // ミノクラス
 abstract class Mino implements Cloneable{
+
+	// [ミノの向き][補正する回数][補正内容 0:X軸補正値、1:Y軸補正値]
+	public static final int CORRECTION_X = 0;
+	public static final int CORRECTION_Y = 1;
+	protected static final int DIRECTIONS = 4; // ミノの向きの種別数(正逆左右の4種類)
+	protected static final int CORRECTIONS = 2; // 補正実施回数
+	public int[][][] correctionLeftArray = new int[DIRECTIONS][CORRECTIONS][2]; // 左回転
+	public int[][][] correctionRightArray = new int[DIRECTIONS][CORRECTIONS][2]; // 右回転
 
 	// ミノを構成するパネル数
 	private static final int ROW = 4;
@@ -21,14 +30,16 @@ abstract class Mino implements Cloneable{
 
 	// ミノの向き
 	// 1:正面、2:右向き、3:上下逆、4:左向き
-	protected static final int DIRECTION_NORMAL = 1;
-	protected static final int DIRECTION_RIGHT = 2;
-	protected static final int DIRECTION_REVERCE = 3;
-	protected static final int DIRECTION_LEFT = 4;
+	protected static final int DIRECTION_NORMAL = 0;
+	protected static final int DIRECTION_RIGHT = 1;
+	protected static final int DIRECTION_REVERCE = 2;
+	protected static final int DIRECTION_LEFT = 3;
 	protected int direction = DIRECTION_NORMAL;
 
 	// ミノを構成するパネルの位置情報を保持s
 	protected int[][] panelArray = new int[ROW][COL];
+
+	//private TetrisImage minoImage = new TetrisImage();
 
 	public Mino() {
 		this.init();
@@ -57,29 +68,62 @@ abstract class Mino implements Cloneable{
 
 	abstract void turn();
 
+	// 次のミノ取得用
+	private static int listIndex = 0;
+
+	private static ArrayList<Integer> list;
+
+	static {
+		list = new ArrayList<Integer>();
+        for(int i = 0 ; i <= 6 ; i++) {
+            list.add(i);
+        }
+	}
+
 	// ランダムに異なる形状のミノのオブジェクトを返す
 	public static Mino getMino() {
-		Mino mino;
-		Random randI = new Random();
-		int num = randI.nextInt(10);
+		Mino mino = null;
 
-		if (num < 2) {
-			mino = new MinoBar();
-		} else if ((num >= 2) && (num <= 3)) {
-			mino = new MinoTotu();
-		} else if ((num >= 4) && (num <= 5)) {
-			mino = new MinoSquare();
-		} else if ((num >= 6) && (num <= 7)) {
-			mino = new MinoKagi1();
-		} else {
-			mino = new MinoKagi2();
+		// シャッフルして、順番を変える
+        if (listIndex == 0) {
+        	Collections.shuffle(list);
+        }
+
+        int num = list.get(listIndex);
+        listIndex++;
+
+        if (listIndex > 6) {
+        	listIndex = 0;
+        }
+
+		switch(num) {
+		case 0: mino = new MinoI();break;
+		case 1: mino = new MinoJ();break;
+		case 2: mino = new MinoL();break;
+		case 3: mino = new MinoS();break;
+		case 4: mino = new MinoZ();break;
+		case 5: mino = new MinoT();break;
+		case 6: mino = new MinoO();break;
 		}
-//mino = new MinoBar();
+
+mino = new MinoI();
 		return mino;
 	}
 
+	// ミノに魔法薬をセットする
+	protected void setMagicItem() {
+		for (int row = 0; row < ROW; row++) {
+			for (int col = 0; col < COL; col++) {
+				if (this.panelArray[row][col] == 1) {
+					this.panelArray[row][col] = 2;
+					return;
+				}
+			}
+		}
+	}
+
 	// ミノを表示する
-	protected void show(GraphicsContext canvas) {
+	protected void show(GraphicsContext canvas, boolean isNext) {
 
 		for (int row = 0; row < ROW; row++) {
 			for (int col = 0; col < COL; col++) {
@@ -90,7 +134,14 @@ abstract class Mino implements Cloneable{
 
 				if (this.panelArray[row][col] == 1) {
 					Image img = this.panel.getImage();
-					canvas.drawImage(img, x, y, w, h);
+					if (isNext) {
+						canvas.setGlobalAlpha(0.5);
+						canvas.drawImage(img, x, y, w, h);
+						canvas.setGlobalAlpha(1.0);
+					} else {
+						canvas.drawImage(img, x, y, w, h);
+					}
+
 				}
 			}
 		}

@@ -37,11 +37,20 @@ final class TetrisImage{
 
 	// 画像 ///////////////////////////////////
 	// ミノ画像
-	public static final WritableImage minoBar = new WritableImage(tile_1.getPixelReader(),0, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
-	public static final WritableImage minoKagi1 = new WritableImage(tile_1.getPixelReader(),32, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
-	public static final WritableImage minoKagi2 = new WritableImage(tile_1.getPixelReader(),64, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
-	public static final WritableImage minoSquare = new WritableImage(tile_1.getPixelReader(),96, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
-	public static final WritableImage minoTotu = new WritableImage(tile_1.getPixelReader(),128, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
+	public static final WritableImage minoZ = new WritableImage(tile_1.getPixelReader(),0, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+	public static final WritableImage minoO = new WritableImage(tile_1.getPixelReader(),32, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+	public static final WritableImage minoS = new WritableImage(tile_1.getPixelReader(),64, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+	public static final WritableImage minoJ = new WritableImage(tile_1.getPixelReader(),160, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+	public static final WritableImage minoL = new WritableImage(tile_1.getPixelReader(),128, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+	public static final WritableImage minoT = new WritableImage(tile_1.getPixelReader(),160, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+	public static final WritableImage minoI = new WritableImage(tile_1.getPixelReader(),96, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+
+	public static final WritableImage mitem_1 = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+	public static final WritableImage mitem_2 = new WritableImage(tile_1.getPixelReader(),64, 96, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+
+
+
+
 	// 背景画像（タイル）
 	public static final WritableImage haikei = new WritableImage(tile_1.getPixelReader(),448, 96, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
 	// 主人公さんの背景
@@ -510,6 +519,30 @@ final class TetrisImage{
 		resizedImage[6] = new WritableImage(frame.getPixelReader(),0, 1440, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
 		resizedImage[7] = new WritableImage(frame.getPixelReader(),0, 1680, (int) (frame.getWidth()), (int) (frame.getHeight() / 8));
 
+		int index = 0;
+		if (this.count >= resizedImage.length) {
+			this.count = 0;
+		}
+		index = this.count;
+		this.count++;
+
+		return resizedImage[index];
+	}
+
+	public WritableImage panelAnime() {
+		WritableImage[] resizedImage = new WritableImage[12];
+		resizedImage[0] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[1] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[2] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[3] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[4] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[5] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[6] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[7] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[8] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[9] = new WritableImage(tile_1.getPixelReader(),64, 64, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[10] = new WritableImage(tile_1.getPixelReader(),64, 96, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
+		resizedImage[11] = new WritableImage(tile_1.getPixelReader(),64, 96, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
 		int index = 0;
 		if (this.count >= resizedImage.length) {
 			this.count = 0;

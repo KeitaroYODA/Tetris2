@@ -18,12 +18,12 @@ final class Conf {
 	public static final String INFO_RENSA = "Please Wait.....";
 
 	// ゲーム設定 ///////////////////////////////////////
-	public static final int DOWN_WAIT = 6; // 魔法後のブロック落下待ち時間（値が少ない程速く落ちる）
+	public static final int DOWN_WAIT = 5; // 魔法後のブロック落下待ち時間（値が少ない程速く落ちる）
 	public static final int MAX_SCORE = 100000; // 最大スコア
 	public static final int MAX_LEVEL = 10; // 最大レベル
-	public static final int LEVELUP_SCORE = 1000; // レベルアップ条件スコア
+	public static final int LEVELUP_SCORE = 3000; // レベルアップ条件スコア
 	public static final long WAIT_NANOTIME = 100000000; // フレーム間引き用設定
-	public static final int WAIT_COLISION = 3; // ミノ接地後の操作可能時間（値が少ない程余裕がなくなる）
+	public static final int WAIT_COLISION = 10; // ミノ接地後の操作可能時間（値が少ない程余裕がなくなる）
 	public static final int MAX_MSTOCK_IO = 3; // 魔法（イオ）最大ストック可能数
 	public static final int MAX_MSTOCK_MERA = 3; // 魔法（メラ）最大ストック可能数
 	// 魔法（メラ）用魔法陣の初期表示位置
@@ -39,7 +39,7 @@ final class Conf {
 	// メラ魔法陣
 	public static final int MAGIC_ROW = 3;
 	public static final int MAGIC_COL = 3;
-	
+
 	// 画面レイアウト ///////////////////////////////////////
 	// ミノ構成するパネルサイズ
 	public static final double PANEL_W = GameLib.width() / 33;

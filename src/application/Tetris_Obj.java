@@ -43,6 +43,9 @@ public class Tetris_Obj {
 	private MStock mStock; // 魔法残弾
 	private Mino nextMino; // 次に表示されるミノ
 
+	private Mino nextMino_1; // 次に表示されるミノ
+	private Mino nextMino_2; // 次の次に表示されるミノ
+
 	// このメソッドが1秒間に60回ぐらい呼ばれるので
 	// テトリスの内部処理をここに書く
 	public void update() {
@@ -110,7 +113,9 @@ public class Tetris_Obj {
 	// 初期化
 	private void doInit() {
 		this.gameStatus = GAME_MENU;
-		this.nextMino = Mino.getMino();
+		this.nextMino_1 = Mino.getMino();
+		this.nextMino_2 = Mino.getMino();
+
 		this.field.init();
 		this.field.setMino(Mino.getMino());
 		this.mStock.init();
@@ -168,8 +173,34 @@ public class Tetris_Obj {
 		if (GameLib.isKeyOn("L")) {
 			TetrisAudio.turn();
 			isKeyOn = true;
-			this.field.turnLeft();
+
+			// あと現在のdirectionの値によって振る舞いを変える必要がある
+			boolean result = false;
+			result = this.field.turnLeft();
+
+			// 回転できない場合補正した値を使って再度回転を試行する
+			if (!result) {
+				for (int i = 0; i < Mino.CORRECTIONS; i++) {
+					int x = this.field.getMino().getX();
+					int y = this.field.getMino().getY();
+
+					int ex = x + this.field.getMino().correctionLeftArray[this.field.getMino().getDirection()][i][Mino.CORRECTION_X];
+					int ey = y + this.field.getMino().correctionLeftArray[this.field.getMino().getDirection()][i][Mino.CORRECTION_Y];
+					this.field.getMino().setX(ex);
+					this.field.getMino().setY(ey);
+
+					result = this.field.turnLeft();
+					if (result) {
+						break;
+					} else {
+						this.field.getMino().setX(x);
+						this.field.getMino().setY(y);
+					}
+				}
+
+			}
 		}
+
 		if (GameLib.isKeyOn("D")) {
 			isKeyOn = true;
 			this.field.moveRight();
@@ -193,7 +224,7 @@ public class Tetris_Obj {
 
 	// 衝突判定をおこなう。行が揃っていれば削除する
 	private void colision() {
-		
+
 		// ミノが床またはパネルに接地した
 		if (this.field.colision()) {
 
@@ -204,7 +235,6 @@ public class Tetris_Obj {
 					return;
 				}
 			}
-			this.colisionCount = 0;
 
 			TetrisAudio.colision();
 			this.gameStatus = GAME_MINO_CREATE;
@@ -217,14 +247,20 @@ public class Tetris_Obj {
 				this.gameStatus = GAME_MINO_DELETE;
 				this.updateScore(deleteRows);
 			}
+		} else {
+			// 一度接触してから離れた場合猶予時間をリセット
+			this.colisionCount = 0;
 		}
 	}
 
 	// 次に落下するミノを画面上部に出現させる
 	private void dispNextMino() {
-		this.nextMino.init();
-		this.field.setMino(nextMino);
-		this.nextMino = Mino.getMino();
+
+		this.nextMino_1.init();
+		this.field.setMino(nextMino_1);
+		this.nextMino_1 = this.nextMino_2;
+		this.nextMino_2 = Mino.getMino();
+
 		this.gameStatus = GAME_MAIN;
 
 		// 新しいミノが出現時に他パネルに接触している場合ゲームオーバ＾とする
@@ -518,9 +554,13 @@ public class Tetris_Obj {
 	private void showNextMino(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(Conf.NMINO_X, Conf.NMINO_Y, Conf.NMINO_W, Conf.NMINO_H);
-		nextMino.setX(18);
-		nextMino.setY(5);
-		nextMino.show(canvas);
+		nextMino_1.setX(18);
+		nextMino_1.setY(4);
+		nextMino_1.show(canvas, false);
+
+		nextMino_2.setX(18);
+		nextMino_2.setY(7);
+		nextMino_2.show(canvas, true);
 	}
 
 	// 得点表示
