@@ -129,7 +129,7 @@ final class Field {
 		this.mino.setX(minoX);
 	}
 
-	// ミノを回転
+	// ミノを左回転
 	public boolean turnLeft() {
 
 		int direction = this.mino.getDirection();
@@ -148,7 +148,7 @@ final class Field {
 
 				// 画面の範囲外
 				if (minoPanelArray[i][l] == 1) {
-					if (row >= Field.ROW || col < 0 || col >= Field.COL) {
+					if (row < 0 || row >= Field.ROW || col < 0 || col >= Field.COL) {
 						direction++;
 						if (direction > 3) {
 							direction = 0;
@@ -156,7 +156,6 @@ final class Field {
 						this.mino.setDirection(direction);
 						this.mino.turn();
 						return false;
-						//return;
 					}
 
 					// パネルに衝突した
@@ -168,7 +167,51 @@ final class Field {
 						this.mino.setDirection(direction);
 						this.mino.turn();
 						return false;
-						//return;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	// ミノを右回転
+	public boolean turnRight() {
+
+		int direction = this.mino.getDirection();
+		direction++;
+		if (direction > 3) {
+			direction = 0;
+		}
+		this.mino.setDirection(direction);
+		this.mino.turn();
+
+		int[][] minoPanelArray = this.mino.getPanelArray();
+		for (int i = 0; i < Mino.ROW(); i++) {
+			for (int l = 0; l < Mino.COL(); l++) {
+				int row = i +  this.mino.getY();
+				int col = l + this.mino.getX();
+
+				// 画面の範囲外
+				if (minoPanelArray[i][l] == 1) {
+					if (row < 0 || row >= Field.ROW || col < 0 || col >= Field.COL) {
+						direction--;
+						if (direction < 0) {
+							direction = 3;
+						}
+						this.mino.setDirection(direction);
+						this.mino.turn();
+						return false;
+					}
+
+					// パネルに衝突した
+					if (this.panelArray[row][col] != null) {
+						direction--;
+						if (direction < 0) {
+							direction = 3;
+						}
+						this.mino.setDirection(direction);
+						this.mino.turn();
+						return false;
 					}
 				}
 			}

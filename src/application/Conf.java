@@ -10,7 +10,7 @@ final class Conf {
 	// 画面右下に表示されるインフォメーション
 	public static final String INFO_NONE = "";
 	public static final String INFO_MENU = "ENTER : ゲーム開始";
-	public static final String INFO_MAIN = "A : 左移動\rD : 右移動\rL : ミノ回転\rX : ミノ落下\rM : 魔法メラ発動\rI : 魔法イオ発動\rP : ポーズ";
+	public static final String INFO_MAIN = "A : ミノ左移動\rD : ミノ右移動\rJ : ミノ左回転\rL : ミノ右回転\rX : ミノ落下\rM : 魔法メラ発動\rI : 魔法イオ発動\rP : ポーズ";
 	public static final String INFO_PAUSE = "E : ゲームに戻る";
 	public static final String INFO_MAGIC_IO_SELECT = "ENTER : 魔法発動\rL : 魔法中止";
 	public static final String INFO_MAGIC_MERA_SELECT = "W : 上移動\rX : 下移動\rA : 左移動\rD : 右移動\rENTER : 魔法発動\rL : 魔法中止";

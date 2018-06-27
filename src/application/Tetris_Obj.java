@@ -31,6 +31,7 @@ public class Tetris_Obj {
 	private int colisionCount = 0; // ミノ接地後の操作可能時間カウンタ
 	private int minoDownCount = 0; // ミノ落下速度調整用カウンタ
 	private int downCount = 0; // 魔法発動後のブロック落下速度調整用カウンタ
+	private int keyCount = 0;
 
 	// ゲーム情報
 	private int gameStatus = GAME_INIT;
@@ -168,10 +169,28 @@ public class Tetris_Obj {
 
 		// ミノ操作
 		boolean isKeyOn = false;
-		if (GameLib.isKeyOn("L")) {
-			isKeyOn = true;
-			this.turnLeft();
+
+		// ミノ回転
+		if (this.keyCount == 0) {
+			if (GameLib.isKeyOn("J")) {
+				isKeyOn = true;
+				this.turnLeft();
+			} else if (GameLib.isKeyOn("L")) {
+				isKeyOn = true;
+				this.turnRight();
+			}
+
+			if (isKeyOn) {
+				TetrisAudio.turn();
+				this.keyCount = 2;
+			}
 		}
+
+		this.keyCount--;
+		if (this.keyCount <= 0) {
+			this.keyCount = 0;
+		}
+
 		if (GameLib.isKeyOn("D")) {
 			isKeyOn = true;
 			this.field.moveRight();
@@ -195,17 +214,19 @@ public class Tetris_Obj {
 
 	// ミノを回転（左）
 	private void turnLeft() {
-		boolean result = this.field.turnLeft();
-		
+		Mino mino = this.field.getMino();
+		int[][][] correctionArray = mino.getCorrectionLeftArray();
+
 		// 回転できない場合補正した値を使って再度回転を試行する
+		boolean result = this.field.turnLeft();
 		if (!result) {
 			for (int i = 0; i < Mino.CORRECTIONS; i++) {
 				int x = this.field.getMino().getX();
 				int y = this.field.getMino().getY();
 
 				// 補正値を取得してミノにセット
-				int ex = x + this.field.getMino().correctionLeftArray[this.field.getMino().getDirection()][i][Mino.CORRECTION_X];
-				int ey = y + this.field.getMino().correctionLeftArray[this.field.getMino().getDirection()][i][Mino.CORRECTION_Y];
+				int ex = x + correctionArray[mino.getDirection()][i][Mino.CORRECTION_X];
+				int ey = y + correctionArray[mino.getDirection()][i][Mino.CORRECTION_Y];
 				this.field.getMino().setX(ex);
 				this.field.getMino().setY(ey);
 
@@ -222,7 +243,39 @@ public class Tetris_Obj {
 			}
 		}
 	}
-	
+
+	// ミノを回転（左）
+	private void turnRight() {
+		Mino mino = this.field.getMino();
+		int[][][] correctionArray = mino.getCorrectionRightArray();
+
+		// 回転できない場合補正した値を使って再度回転を試行する
+		boolean result = this.field.turnRight();
+		if (!result) {
+			for (int i = 0; i < Mino.CORRECTIONS; i++) {
+				int x = this.field.getMino().getX();
+				int y = this.field.getMino().getY();
+
+				// 補正値を取得してミノにセット
+				int ex = x + correctionArray[mino.getDirection()][i][Mino.CORRECTION_X];
+				int ey = y + correctionArray[mino.getDirection()][i][Mino.CORRECTION_Y];
+				this.field.getMino().setX(ex);
+				this.field.getMino().setY(ey);
+
+				// ミノの回転を再試行
+				result = this.field.turnRight();
+				if (result) {
+					// 回転できたら終了
+					return;
+				} else {
+					// 回転できなかったらXYの値を元に戻す
+					this.field.getMino().setX(x);
+					this.field.getMino().setY(y);
+				}
+			}
+		}
+	}
+
 	// 衝突判定をおこなう。行が揃っていれば削除する
 	private void colision() {
 

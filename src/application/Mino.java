@@ -13,9 +13,9 @@ abstract class Mino implements Cloneable{
 	public static final int CORRECTION_X = 0;
 	public static final int CORRECTION_Y = 1;
 	protected static final int DIRECTIONS = 4; // ミノの向きの種別数(正逆左右の4種類)
-	protected static final int CORRECTIONS = 2; // 補正実施回数
-	public int[][][] correctionLeftArray = new int[DIRECTIONS][CORRECTIONS][2]; // 左回転
-	public int[][][] correctionRightArray = new int[DIRECTIONS][CORRECTIONS][2]; // 右回転
+	protected static final int CORRECTIONS = 4; // 補正実施回数
+	protected final int[][][] correctionLeftArray = new int[DIRECTIONS][CORRECTIONS][2]; // 左回転
+	protected final int[][][] correctionRightArray = new int[DIRECTIONS][CORRECTIONS][2]; // 右回転
 
 	// ミノを構成するパネル数
 	private static final int ROW = 4;
@@ -39,45 +39,13 @@ abstract class Mino implements Cloneable{
 	// ミノを構成するパネルの位置情報を保持s
 	protected int[][] panelArray = new int[ROW][COL];
 
-	//private TetrisImage minoImage = new TetrisImage();
+	// 次のミノ取得用
+	private static int listIndex = 0;
 
 	public Mino() {
 		this.init();
 		this.initPanel();
-	}
-
-	// ミノの表示位置を初期化
-	public void init() {
-		this.x = Conf.MINO_X;
-		this.y = Conf.MINO_Y;
-	}
-
-	// ミノを構成するパネル配列の初期化
-	protected void initPanel() {
-		for (int i = 0; i < ROW; i++) {
-			for (int l = 0; l < COL; l++) {
-				this.panelArray[i][l] = 0;
-			}
-		}
-	}
-
-	// ミノを構成するパネル情報配列を返す
-	public int[][] getPanelArray() {
-		return this.panelArray;
-	}
-
-	abstract void turn();
-
-	// 次のミノ取得用
-	private static int listIndex = 0;
-
-	private static ArrayList<Integer> list;
-
-	static {
-		list = new ArrayList<Integer>();
-        for(int i = 0 ; i <= 6 ; i++) {
-            list.add(i);
-        }
+		this.initCorrection();
 	}
 
 	// ランダムに異なる形状のミノのオブジェクトを返す
@@ -105,9 +73,43 @@ abstract class Mino implements Cloneable{
 		case 5: mino = new MinoT();break;
 		case 6: mino = new MinoO();break;
 		}
-
-mino = new MinoI();
+//mino = new MinoO();
 		return mino;
+	}
+
+	// ミノの表示位置を初期化
+	public void init() {
+		this.x = Conf.MINO_X;
+		this.y = Conf.MINO_Y;
+	}
+
+	// 回転補正配列初期化
+	protected void initCorrection() {
+		this.initCorrectionLeft();
+		this.initCorrectionRight();
+	}
+
+	// ミノを構成するパネル配列の初期化
+	protected void initPanel() {
+		for (int i = 0; i < ROW; i++) {
+			for (int l = 0; l < COL; l++) {
+				this.panelArray[i][l] = 0;
+			}
+		}
+	}
+
+	// ミノを構成するパネル情報配列を返す
+	public int[][] getPanelArray() {
+		return this.panelArray;
+	}
+
+	private static ArrayList<Integer> list;
+
+	static {
+		list = new ArrayList<Integer>();
+        for(int i = 0 ; i <= 6 ; i++) {
+            list.add(i);
+        }
 	}
 
 	// ミノに魔法薬をセットする
@@ -182,4 +184,16 @@ mino = new MinoI();
 	public void setY(int y) {
 		this.y = y;
 	}
+
+	public int[][][] getCorrectionLeftArray() {
+		return this.correctionLeftArray;
+	}
+
+	public int[][][] getCorrectionRightArray() {
+		return this.correctionLeftArray;
+	}
+
+	abstract void turn();
+	abstract void initCorrectionLeft();
+	abstract void initCorrectionRight();
 }
