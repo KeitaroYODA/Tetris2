@@ -7,9 +7,6 @@ import javafx.scene.text.TextAlignment;
 
 public class Tetris_Obj {
 
-	// <TODO> 壁に接触時の中心軸の変更
-	// <TODO> T-SPINの導入
-
 	// ゲームステータス
 	private static final int GAME_INIT = 0; // 初期化
 	private static final int GAME_MENU = 1; // スタート画面
@@ -31,13 +28,13 @@ public class Tetris_Obj {
 	private int colisionCount = 0; // ミノ接地後の操作可能時間カウンタ
 	private int minoDownCount = 0; // ミノ落下速度調整用カウンタ
 	private int downCount = 0; // 魔法発動後のブロック落下速度調整用カウンタ
-	private int keyCount = 0;
+	private int keyCount = 0; // ミノ回転抑制カウンタ
 
 	// ゲーム情報
 	private int gameStatus = GAME_INIT;
+	private String message = Conf.MESSAGE_NONE; // メイン画面に表示されるメッセージ
 	private int level = 1; // レベル
 	private int score = 0; // スコア
-	private String message = Conf.MESSAGE_NONE; // メイン画面に表示されるメッセージ
 
 	private Field field; // ミノ表示領域
 	private Hero hero; // 主人公さん
@@ -77,11 +74,20 @@ public class Tetris_Obj {
 		case GAME_OVER: // ゲームオーバ画面
 			this.dispGameOver();
 			break;
+		case GAME_MINO_DELETE: // 揃った行を削除
+			this.deleteRow();
+			break;
 		case GAME_MAGIC_MERA_SELECT: // 魔法発動準備中画面（アニメーション）
 			this.dispMagicSelectMera();
 			break;
 		case GAME_MAGIC_MERA_EXEC: // 魔法発動画面（アニメーション）
 			this.dispMagicMera();
+			break;
+		case GAME_RENSA_MERA: // メラ発動後の連鎖中画面
+			this.dispRensaMera();
+			break;
+		case GAME_RENSA_MERA_DELETE: // 揃った行を削除（連鎖中）
+			this.deleteRowRensaMera();
 			break;
 		case GAME_MAGIC_IO_SELECT: // 魔法発動準備中画面（アニメーション）
 			this.dispMagicSelectIo();
@@ -89,27 +95,20 @@ public class Tetris_Obj {
 		case GAME_MAGIC_IO_EXEC: // 魔法発動画面（アニメーション）
 			this.dispMagicIo();
 			break;
-		case GAME_MINO_DELETE: // 揃った行を削除
-			this.deleteRow();
-			break;
-		case GAME_RENSA_IO_DELETE: // 揃った行を削除（連鎖中）
-			this.deleteRowRensaIo();
-			break;
-		case GAME_RENSA_MERA_DELETE: // 揃った行を削除（連鎖中）
-			this.deleteRowRensaMera();
-			break;
 		case GAME_RENSA_IO: // イオ発動後の連鎖中画面
 			this.dispRensaIo();
 			break;
-		case GAME_RENSA_MERA: // メラ発動後の連鎖中画面
-			this.dispRensaMera();
+		case GAME_RENSA_IO_DELETE: // 揃った行を削除（連鎖中）
+			this.deleteRowRensaIo();
 			break;
 		}
 
 		this.show();
 	}
 
-	// 初期化
+	/**
+	 * 初期化
+	 */
 	private void doInit() {
 		this.gameStatus = GAME_MENU;
 		this.nextMino_1 = Mino.getMino();
@@ -121,7 +120,9 @@ public class Tetris_Obj {
 		this.initScore();
 	}
 
-	// タイトル画面
+	/**
+	 * タイトル画面を表示
+	 */
 	private void dispTitle() {
 		this.message = Conf.MESSAGE_MENU;
 		this.hero.setAction(Hero.HERO_ACTION_MENU);
@@ -133,7 +134,9 @@ public class Tetris_Obj {
 		}
 	}
 
-	// ゲームメイン画面を表示
+	/**
+	 * ゲームメイン画面を表示
+	 */
 	private void dispGameMain() {
 
 		// ポーズ
@@ -185,7 +188,6 @@ public class Tetris_Obj {
 				this.keyCount = 2;
 			}
 		}
-
 		this.keyCount--;
 		if (this.keyCount <= 0) {
 			this.keyCount = 0;
@@ -212,7 +214,9 @@ public class Tetris_Obj {
 		this.minoDownCount++;
 	}
 
-	// ミノを回転（左）
+	/**
+	 * ミノを左回転
+	 */
 	private void turnLeft() {
 		Mino mino = this.field.getMino();
 		int[][][] correctionArray = mino.getCorrectionLeftArray();
@@ -244,7 +248,9 @@ public class Tetris_Obj {
 		}
 	}
 
-	// ミノを回転（左）
+	/**
+	 * ミノを右回転
+	 */
 	private void turnRight() {
 		Mino mino = this.field.getMino();
 		int[][][] correctionArray = mino.getCorrectionRightArray();
@@ -276,9 +282,10 @@ public class Tetris_Obj {
 		}
 	}
 
-	// 衝突判定をおこなう。行が揃っていれば削除する
+	/**
+	 * 落下中ミノの衝突判定をおこなう
+	 */
 	private void colision() {
-
 		// ミノが床またはパネルに接地した
 		if (this.field.colision()) {
 
@@ -307,24 +314,27 @@ public class Tetris_Obj {
 		}
 	}
 
-	// 次に落下するミノを画面上部に出現させる
+	/**
+	 * 次に落下するミノを画面上部に出現させる
+	 */
 	private void dispNextMino() {
-
 		this.nextMino_1.init();
 		this.field.setMino(nextMino_1);
 		this.nextMino_1 = this.nextMino_2;
 		this.nextMino_2 = Mino.getMino();
 
-		this.gameStatus = GAME_MAIN;
-
 		// 新しいミノが出現時に他パネルに接触している場合ゲームオーバ＾とする
 		if (this.field.colision()) {
 			TetrisAudio.gameOver();
 			this.gameStatus = GAME_OVER;
+		} else {
+			this.gameStatus = GAME_MAIN;
 		}
 	}
 
-	// ゲームオーバー画面
+	/**
+	 * ゲームオーバー画面を表示
+	 */
 	private void dispGameOver() {
 		this.message = Conf.MESSAGE_GAMEOVER;
 		this.hero.setAction(Hero.HERO_ACTION_GAMEOVER);
@@ -339,7 +349,9 @@ public class Tetris_Obj {
 		}
 	}
 
-	// ポーズ画面
+	/**
+	 * ポーズ画面を表示
+	 */
 	private void dispPause() {
 		this.message = Conf.MESSAGE_PAUSE;
 		this.hero.setAction(Hero.HERO_ACTION_REST);
@@ -351,7 +363,9 @@ public class Tetris_Obj {
 		}
 	}
 
-	// 魔法発動準備中（メラ）
+	/**
+	 * 魔法（メラ）発動準備中画面を表示
+	 */
 	private void dispMagicSelectMera() {
 		this.hero.setAction(Hero.HERO_ACTION_CHARGE);
 		this.field.getMagic().setAction(Magic.MAGIC_ACTION_MERA_SELECT);
@@ -379,7 +393,9 @@ public class Tetris_Obj {
 		}
 	}
 
-	// 魔法発動準備中（イオ）
+	/**
+	 * 魔法（イオ）発動準備中画面を表示
+	 */
 	private void dispMagicSelectIo() {
 		this.hero.setAction(Hero.HERO_ACTION_CHARGE);
 		this.field.getMagic().setAction(Magic.MAGIC_ACTION_IO_SELECT);
@@ -392,7 +408,9 @@ public class Tetris_Obj {
 		}
 	}
 
-	// 魔法発動中（メラ）
+	/**
+	 *  魔法（メラ）発動中画面を表示
+	 */
 	private void dispMagicMera() {
 		this.hero.setAction(Hero.HERO_ACTION_MAGIC_1);
 		this.field.getMagic().setAction(Magic.MAGIC_ACTION_MERA);
@@ -409,7 +427,10 @@ public class Tetris_Obj {
 		}
 	}
 
-	// 魔法発動中（イオ）
+	//
+	/**
+	 * 魔法（イオ）発動中画面を表示
+	 */
 	private void dispMagicIo() {
 		this.hero.setAction(Hero.HERO_ACTION_MAGIC_1);
 		this.field.getMagic().setAction(Magic.MAGIC_ACTION_IO);
@@ -422,7 +443,9 @@ public class Tetris_Obj {
 		}
 	}
 
-	// メラ実行後の連鎖処理（落下）
+	/**
+	 * 魔法（メラ）発動後のパネル落下中画面を表示
+	 */
 	private void dispRensaMera() {
 
 		// ブロックの落下速度調整
@@ -447,7 +470,9 @@ public class Tetris_Obj {
 		}
 	}
 
-	// イオ実行後の連鎖処理（落下）
+	/**
+	 * 魔法（イオ）発動後のパネル落下中画面を表示
+	 */
 	private void dispRensaIo() {
 
 		// ブロックの落下速度調整
@@ -471,7 +496,53 @@ public class Tetris_Obj {
 		}
 	}
 
-	// 不要なフレームを間引く
+	/**
+	 * 揃った行を削除
+	 */
+	private void deleteRow() {
+		if (this.field.animeIsEnd()) {
+			this.field.deleteRow(); // 揃った行のブロックを消す
+
+			// 消えた行をしばらく画面に表示したいため少し時間をおいてから削除
+			if (this.isDown()) {
+				this.field.rowDown(); // 揃った行のブロックを削除
+				this.field.initAnime();
+				this.gameStatus = GAME_MINO_CREATE;
+			}
+		}
+	}
+
+	/**
+	 * 揃った行を削除（イオ発動後）
+	 */
+	private void deleteRowRensaIo() {
+		if (this.field.animeIsEnd()) {
+			this.field.deleteRow(); // 揃った行のブロックを削除
+			this.field.initAnime();
+			this.gameStatus = GAME_RENSA_IO;
+		}
+	}
+
+	/**
+	 * 揃った行を削除（メラ発動後）
+	 */
+	private void deleteRowRensaMera() {
+		if (this.field.animeIsEnd()) {
+			this.field.deleteRow(); // 揃った行のブロックを消す
+
+			// 消えた行をしばらく画面に表示したいため少し時間をおいてから削除
+			if (this.isDown()) {
+				this.field.rowDown(); // 揃った行のブロックを削除
+				this.field.initAnime();
+				this.gameStatus = GAME_RENSA_MERA;
+			}
+		}
+	}
+
+	/**
+	 * 不要なフレームを間引く
+	 * @return true:実行、false:スキップ
+	 */
 	private boolean isSkip() {
 		long now = System.nanoTime();
 		if (now - this.execTime < Conf.WAIT_NANOTIME) {
@@ -482,50 +553,18 @@ public class Tetris_Obj {
 		}
 	}
 
-	// スコア、レベルを初期化
+	/**
+	 * スコア、レベルを初期化
+	 */
 	private void initScore() {
 		this.score = 0;
 		this.level = 1;
 	}
 
-	// 揃った行を削除
-	private void deleteRow() {
-		if (this.field.animeIsEnd()) {
-			this.field.deleteRow(); // 揃った行のブロックを消す
-
-			// ブロックが消えてから少し時間をおいて落とす
-			if (this.isDown()) {
-				this.field.rowDown(); // 揃った行より上のブロックを1段落とす
-				this.field.initAnime();
-				this.gameStatus = GAME_MINO_CREATE;
-			}
-		}
-	}
-
-	// 揃った行を削除（イオ発動後）
-	private void deleteRowRensaIo() {
-		if (this.field.animeIsEnd()) {
-			this.field.deleteRow(); // 揃った行のブロックを消す
-			this.field.initAnime();
-			this.gameStatus = GAME_RENSA_IO;
-		}
-	}
-
-	// 揃った行を削除（メラ発動後）
-	private void deleteRowRensaMera() {
-		if (this.field.animeIsEnd()) {
-			this.field.deleteRow(); // 揃った行のブロックを消す
-
-			// ブロックが消えてから少し時間をおいて落とす
-			if (this.isDown()) {
-				this.field.rowDown(); // 揃った行より上のブロックを1段落とす
-				this.field.initAnime();
-				this.gameStatus = GAME_RENSA_MERA;
-			}
-		}
-	}
-
-	// ブロックの落下速度調整
+	/**
+	 * ブロックの落下速度調整
+	 * @return true:落下、false:落下しない
+	 */
 	private boolean isDown() {
 		boolean result = false;
 		if (this.downCount > Conf.DOWN_WAIT) {
@@ -537,7 +576,10 @@ public class Tetris_Obj {
 		return result;
 	}
 
-	// スコア、レベルを加算
+	/**
+	 * スコア、レベルを加算
+	 * @param delete 削除された行数または魔法（メラ）によって削除されたパネル数
+	 */
 	private void updateScore(int delete) {
 
 		// 行の削除がなかった場合にはなにもしない
@@ -565,23 +607,29 @@ public class Tetris_Obj {
 		}
 	}
 
+	/**
+	 * GraphicsContextを使用して画面を描画
+	 */
 	private void show() {
 		GraphicsContext canvas = GameLib.getGC();
 		if (this.gameStatus == GAME_MENU) {
-			this.showBackground(canvas); // 背景タイル画像
+			this.showBackground(canvas); // 背景
 		}
 
 		this.field.show(canvas); // ゲームメイン画面
 		this.hero.show(canvas); // 主人公さん
 		this.mStock.show(canvas); // 魔法残数
-		this.showNextMino(canvas);
-		this.showMessage(canvas);
-		this.showScore(canvas);
-		this.showLevel(canvas);
-		this.showInfo(canvas);
+		this.showNextMino(canvas); // 次のミノ
+		this.showMessage(canvas); // メイン画面上のメッセージ
+		this.showScore(canvas); // スコア
+		this.showLevel(canvas); // レベル
+		this.showInfo(canvas); // インフォメーション
 	}
 
-	// 背景の表示
+	/**
+	 * 背景を描画
+	 * @param canvas
+	 */
 	private void showBackground(GraphicsContext canvas) {
 		int col = GameLib.width() / (int) Conf.PANEL_W;
 		int row = GameLib.height() / (int) Conf.PANEL_H;
@@ -596,7 +644,10 @@ public class Tetris_Obj {
 		}
 	}
 
-	// メッセージの表示
+	/**
+	 * メイン画面上のメッセージを描画
+	 * @param canvas
+	 */
 	private void showMessage(GraphicsContext canvas) {
 		canvas.setFill(Color.WHITE);
 		canvas.setFont(new Font("游ゴシック体", Conf.MESSAGE_W));
@@ -604,20 +655,27 @@ public class Tetris_Obj {
 		canvas.fillText(this.message, Conf.MESSAGE_X, Conf.MESSAGE_Y);
 	}
 
-	// 次のミノ表示
+	/**
+	 * 次のミノを描画
+	 * @param canvas
+	 */
 	private void showNextMino(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(Conf.NMINO_X, Conf.NMINO_Y, Conf.NMINO_W, Conf.NMINO_H);
+		// 次のミノ
 		nextMino_1.setX(18);
 		nextMino_1.setY(4);
 		nextMino_1.show(canvas, false);
-
+		// 次の次のミノ
 		nextMino_2.setX(18);
 		nextMino_2.setY(7);
 		nextMino_2.show(canvas, true);
 	}
 
-	// 得点表示
+	/**
+	 * スコアを描画
+	 * @param canvas
+	 */
 	private void showScore(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(Conf.SCORE_X, Conf.SCORE_Y, Conf.SCORE_W, Conf.SCORE_H);
@@ -627,7 +685,10 @@ public class Tetris_Obj {
 		canvas.fillText("Score ： " + this.score, Conf.SCORE_X + (Conf.PANEL_W * 1), Conf.SCORE_Y + (Conf.PANEL_H * 1.5));
 	}
 
-	// レベル表示
+	/**
+	 * レベルを描画
+	 * @param canvas
+	 */
 	private void showLevel(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(Conf.LEVEL_X, Conf.LEVEL_Y, Conf.LEVEL_W, Conf.LEVEL_H);
@@ -637,7 +698,10 @@ public class Tetris_Obj {
 		canvas.fillText("Level ： " + this.level, Conf.LEVEL_X + (Conf.PANEL_W * 1), Conf.LEVEL_Y + (Conf.PANEL_H * 1.5));
 	}
 
-	// 説明表示
+	/**
+	 * インフォメーションを描画
+	 * @param canvas
+	 */
 	private void showInfo(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);
 		canvas.fillRect(Conf.INFO_X, Conf.INFO_Y, Conf.INFO_W, Conf.INFO_H);

@@ -4,24 +4,28 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-final class Field {
+/**
+ * ゲーム領域クラス
+ *
+ */
+public final class Field {
 
 	// 画面に表示するパネルの範囲
 	private static final int COL = Conf.FIELD_COL; // 列数
 	private static final int ROW = Conf.FIELD_ROW; // 行数
+	private static Field field;
 
 	// 画面に表示されるパネルの表示位置を保持
 	private Panel[][] panelArray = new Panel[ROW][COL];
 
-	private static Field field;
-	private Mino mino;
-	private Magic magic = Magic.getInstance();
-	private TetrisImage image = new TetrisImage();
+	private Mino mino; // 落下中のミノ
+	private Magic magic = Magic.getInstance(); // 魔法効果
+	private TetrisImage image = new TetrisImage(); // パネル消滅アニメ表示用
 
-	public Mino getMino() {
-		return this.mino;
-	}
-
+	/**
+	 * 自身のオブジェクトを返す
+	 * @return Field
+	 */
 	public static Field getInstance() {
 		if (field == null) {
 			field = new Field();
@@ -29,10 +33,16 @@ final class Field {
 		return field;
 	}
 
+	/**
+	 * コンストラクタ
+	 */
 	private Field() {
 		this.init();
 	}
 
+	/**
+	 * ゲーム領域を初期化
+	 */
 	public void init() {
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
@@ -41,16 +51,9 @@ final class Field {
 		}
 	}
 
-	// 落下中のミノをフィールドのセット
-	public void setMino(Mino mino) {
-		this.mino = mino;
-	}
-
-	public Magic getMagic() {
-		return this.magic;
-	}
-
-	// ミノを落下させる
+	/**
+	 * ミノを落下
+	 */
 	public void moveDown() {
 		int minoY = this.mino.getY();
 		minoY++;
@@ -76,7 +79,9 @@ final class Field {
 		this.mino.setY(minoY);
 	}
 
-	// ミノを右に移動させる
+	/**
+	 * ミノを右に移動
+	 */
 	public void moveRight() {
 		int minoX = this.mino.getX();
 		minoX++;
@@ -103,7 +108,9 @@ final class Field {
 		this.mino.setX(minoX);
 	}
 
-	// ミノを左に移動させる
+	/**
+	 * ミノを左に移動
+	 */
 	public void moveLeft() {
 		int minoX = this.mino.getX();
 		minoX--;
@@ -129,7 +136,10 @@ final class Field {
 		this.mino.setX(minoX);
 	}
 
-	// ミノを左回転
+	/**
+	 * ミノを左に回転
+	 * @return true:回転できた、false:回転できなかった
+	 */
 	public boolean turnLeft() {
 
 		int direction = this.mino.getDirection();
@@ -174,7 +184,10 @@ final class Field {
 		return true;
 	}
 
-	// ミノを右回転
+	/**
+	 * ミノを右に回転
+	 * @return true:回転できた、false:回転できなかった
+	 */
 	public boolean turnRight() {
 
 		int direction = this.mino.getDirection();
@@ -219,7 +232,10 @@ final class Field {
 		return true;
 	}
 
-	// ミノの衝突判定
+	/**
+	 * 落下中ミノの衝突判定
+	 * @return true:床または他パネルにミノの下面が接触、false:接触なし
+	 */
 	public boolean colision() {
 		int[][] minoPanelArray = this.mino.getPanelArray();
 
@@ -244,7 +260,10 @@ final class Field {
 		return false;
 	}
 
-	// 積みあがったパネルが揃っていれば揃った行数を返す
+	/**
+	 * 領域上のパネルが揃った行数を返す
+	 * @return　揃った行数
+	 */
 	public int checkDeleteRow() {
 		int checkNum = 0;
 		boolean check = false;
@@ -256,7 +275,6 @@ final class Field {
 					check = false;
 				}
 			}
-
 			// 行が揃っている
 			if (check) {
 				checkNum++;
@@ -265,8 +283,10 @@ final class Field {
 		return checkNum;
 	}
 
-	// 魔法陣で指定された範囲のパネルを削除する。魔法（メラ）実行時に呼び出される
-	// 削除したパネル数を返す
+	/**
+	 * 魔法陣で指定された範囲のパネルを削除する。魔法（メラ）実行時に呼び出される
+	 * @return 削除したパネル数
+	 */
 	public int deletePanels() {
 		int row, col, deletePanels = 0;
 
@@ -284,7 +304,9 @@ final class Field {
 		return deletePanels;
 	}
 
-	// 行が揃ったパネルを削除する
+	/**
+	 * 行が揃ったパネルを削除
+	 */
 	public void deleteRow() {
 
 		for (int row = (ROW - 1); row > 0; row--) {
@@ -294,7 +316,7 @@ final class Field {
 					check = false;
 				}
 			}
-
+			// 行が揃っている
 			if (check) {
 				for (int col = 0; col < COL; col++) {
 					this.panelArray[row][col] = null;
@@ -303,7 +325,9 @@ final class Field {
 		}
 	}
 
-	// 削除された行の上にあるブロックを落とす
+	/**
+	 * すべての列にNULLがセットされている行を削除
+	 */
 	public void rowDown() {
 		int index = ROW - 1;
 		Panel[][] editArray = new Panel[ROW][COL];
@@ -316,7 +340,6 @@ final class Field {
 					check = true;
 				}
 			}
-
 			// 空洞の行を埋める
 			if (check) {
 				for (int col = 0; col < COL; col++) {
@@ -328,8 +351,12 @@ final class Field {
 		this.panelArray = editArray;
 	}
 
-	// フィールド上のパネルをすべて落下させる。イオ発動時に呼び出される
-	// 落下するパネルがあった場合真を返す
+	/**
+	 * フィールド上のパネルをすべて落下させる。魔法発動後に呼び出される
+	 * @param magicAction Magic.MAGIC_ACTION_MERA:メラ実行 魔法効果範囲のパネルのみ落下
+	 *                    Magic.MAGIC_ACTION_IO  :イオ実行 全画面のパネルを落下
+	 * @return true:落下したパネルあり、false:落下したパネルなし
+	 */
 	public boolean allDown(int magicAction) {
 		Panel[][] editArray = new Panel[ROW][COL];
 		boolean result = false;
@@ -361,35 +388,38 @@ final class Field {
 						// ほかのパネルに衝突した場合も移動させない
 						editArray[row][col] = this.panelArray[row][col];
 					} else {
+						// パネルを1行下へ移動させる
 						editArray[index][col] = this.panelArray[row][col];
 						result = true;
 					}
 				}
-
 			}
 		}
 		this.panelArray = editArray;
 		return result;
 	}
 
-	// 積みあがっているミノの高さを返す
+	/**
+	 * ゲーム領域に積みあがっているパネルの高さを返す
+	 * @return 積みあがっているパネルの高さ(値が小さい程高い)
+	 */
 	public int getMaxHeight() {
-		int result = ROW;
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
 				if (this.panelArray[i][l] != null) {
-					if (i < result) {
-						result = i;
-					}
+					return i;
 				}
 			}
 		}
-		return result;
+		return ROW - 1;
 	}
 
-	// ミノの情報のパネル情報をフィールドに渡す
+	/**
+	 * 接地したミノの情報のパネル情報を積みあがったパネルとしてゲーム領域に渡す
+	 */
 	public void setMino2Field() {
 		int[][] minoPanelArray = this.mino.getPanelArray();
+
 		for (int i = 0; i < Mino.ROW(); i++) {
 			for (int l = 0; l < Mino.COL(); l++) {
 
@@ -404,17 +434,18 @@ final class Field {
 				}
 			}
 		}
-
 		// 渡し終わったミノを削除
 		this.mino = null;
 	}
 
-	// 行が揃った際の消滅エフェクトを表示
+	/**
+	 * 行が揃った際の消滅アニメを描画
+	 * @param canvas
+	 */
 	public void showDeleteAnime(GraphicsContext canvas) {
 
 		// 揃った行があれば消滅エフェクトを表示
 		if (this.checkDeleteRow() > 0) {
-
 			boolean isCmpl = false;
 			Image hitEffects = this.image.hiteffectAnime_1();
 
@@ -439,39 +470,35 @@ final class Field {
 		}
 	}
 
-	// フィールドを表示
+	/**
+	 * ゲーム領域を描画
+	 * @param canvas
+	 */
 	public void show(GraphicsContext canvas) {
-
-		// 背景及び積み上げられたパネルを表示
+		// 背景及び積み上げられたパネルを描画
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
-
 				double x = l * Conf.PANEL_W + Conf.FIELD_X;
 				double y = i * Conf.PANEL_H + Conf.FIELD_Y;
 				double w = Conf.PANEL_W;
 				double h = Conf.PANEL_H;
-
 				canvas.setFill(Color.BLACK);
 				canvas.fillRect(x, y, w, h);
-
-				//canvas.setFill(Color.DARKGRAY);
-				//canvas.fillRect(x, y, w-1, h-1);
 
 				if (this.panelArray[i][l] != null) {
 					canvas.drawImage(panelArray[i][l].getImage(),x, y, w, h);
 				}
 			}
 		}
-
-		// 落下中のミノを表示
+		// 落下中のミノを描画
 		if (this.mino != null) {
 			this.mino.show(canvas, false);
 		}
 
-		// 消滅エフェクトを表示
+		// 消滅アニメを描画
 		this.showDeleteAnime(canvas);
 
-		// 魔法を表示
+		// 魔法効果を描画
 		this.magic.show(canvas);
 
 		/*
@@ -496,19 +523,57 @@ final class Field {
 		*/
 	}
 
-	// アニメの再生が終わったら真を返す
+	/**
+	 * アニメの再生が終わったら真を返す
+	 * @return true:アニメの再生が終わった、false:アニメ再生中
+	 */
 	public boolean animeIsEnd() {
 		return image.isEnd();
 	}
 
+	/**
+	 * アニメ用カウンタ情報等を初期化
+	 */
 	public void initAnime() {
 		this.image.init();
 	}
 
+	/**
+	 * 新たなミノを領域にセット
+	 * @param mino これから落下するミノオブジェクト
+	 */
+	public void setMino(Mino mino) {
+		this.mino = mino;
+	}
+
+	/**
+	 * 落下中のミノオブジェクトを返す
+	 * @return Mino
+	 */
+	public Mino getMino() {
+		return this.mino;
+	}
+
+	/**
+	 * 魔法効果オブジェクトを返す
+	 * @return Magic
+	 */
+	public Magic getMagic() {
+		return this.magic;
+	}
+
+	/**
+	 * ゲーム領域の行数を返す
+	 * @return
+	 */
 	public static int ROW() {
 		return ROW;
 	}
 
+	/**
+	 * ゲーム領域の列数を返す
+	 * @return
+	 */
 	public static int COL() {
 		return COL;
 	}

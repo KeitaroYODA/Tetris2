@@ -7,19 +7,37 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 // ミノクラス
-abstract class Mino implements Cloneable{
-
-	// [ミノの向き][補正する回数][補正内容 0:X軸補正値、1:Y軸補正値]
-	public static final int CORRECTION_X = 0;
-	public static final int CORRECTION_Y = 1;
-	protected static final int DIRECTIONS = 4; // ミノの向きの種別数(正逆左右の4種類)
-	protected static final int CORRECTIONS = 4; // 補正実施回数
-	protected final int[][][] correctionLeftArray = new int[DIRECTIONS][CORRECTIONS][2]; // 左回転
-	protected final int[][][] correctionRightArray = new int[DIRECTIONS][CORRECTIONS][2]; // 右回転
+public abstract class Mino implements Cloneable{
+	// ミノの向き
+	protected static final int DIRECTION_NORMAL = 0;
+	protected static final int DIRECTION_RIGHT = 1;
+	protected static final int DIRECTION_REVERCE = 2;
+	protected static final int DIRECTION_LEFT = 3;
 
 	// ミノを構成するパネル数
 	private static final int ROW = 4;
 	private static final int COL = 4;
+
+	// 次のミノ取得用
+	private static int listIndex = 0;
+	private static ArrayList<Integer> list;
+
+	static {
+		list = new ArrayList<Integer>();
+        for(int i = 0 ; i <= 6 ; i++) {
+            list.add(i);
+        }
+	}
+
+	// 回転時の補正情報
+	public static final int CORRECTION_X = 0;
+	public static final int CORRECTION_Y = 1;
+	public static final int DIRECTIONS = 4; // ミノの向きの種別数(正逆左右の4種類)
+	public static final int CORRECTIONS = 4; // 補正実施回数
+
+	// 回転時の補正情報[ミノの向き][補正回][補正内容 0:X軸補正値、1:Y軸補正値]
+	protected final int[][][] correctionLeftArray = new int[DIRECTIONS][CORRECTIONS][2]; // 左回転
+	protected final int[][][] correctionRightArray = new int[DIRECTIONS][CORRECTIONS][2]; // 右回転
 
 	// ミノに表示する画像情報を格納
 	protected Panel panel;
@@ -29,26 +47,24 @@ abstract class Mino implements Cloneable{
 	protected int y; // 縦
 
 	// ミノの向き
-	// 1:正面、2:右向き、3:上下逆、4:左向き
-	protected static final int DIRECTION_NORMAL = 0;
-	protected static final int DIRECTION_RIGHT = 1;
-	protected static final int DIRECTION_REVERCE = 2;
-	protected static final int DIRECTION_LEFT = 3;
 	protected int direction = DIRECTION_NORMAL;
 
-	// ミノを構成するパネルの位置情報を保持s
+	// ミノを構成するパネルの位置情報を保持
 	protected int[][] panelArray = new int[ROW][COL];
 
-	// 次のミノ取得用
-	private static int listIndex = 0;
-
+	/**
+	 * コンストラクタ
+	 */
 	public Mino() {
 		this.init();
 		this.initPanel();
 		this.initCorrection();
 	}
 
-	// ランダムに異なる形状のミノのオブジェクトを返す
+	/**
+	 * ランダムに異なる形状のミノのオブジェクトを返す
+	 * @return Mino
+	 */
 	public static Mino getMino() {
 		Mino mino = null;
 
@@ -77,19 +93,25 @@ abstract class Mino implements Cloneable{
 		return mino;
 	}
 
-	// ミノの表示位置を初期化
+	/**
+	 * ミノの表示位置を初期化
+	 */
 	public void init() {
 		this.x = Conf.MINO_X;
 		this.y = Conf.MINO_Y;
 	}
 
-	// 回転補正配列初期化
+	/**
+	 * 回転補正配列初期化
+	 */
 	protected void initCorrection() {
 		this.initCorrectionLeft();
 		this.initCorrectionRight();
 	}
 
-	// ミノを構成するパネル配列の初期化
+	/**
+	 * ミノを構成するパネル配列の初期化
+	 */
 	protected void initPanel() {
 		for (int i = 0; i < ROW; i++) {
 			for (int l = 0; l < COL; l++) {
@@ -98,21 +120,16 @@ abstract class Mino implements Cloneable{
 		}
 	}
 
-	// ミノを構成するパネル情報配列を返す
+	/**
+	 * ミノを構成するパネル情報配列を返す
+	 * @return
+	 */
 	public int[][] getPanelArray() {
 		return this.panelArray;
 	}
 
-	private static ArrayList<Integer> list;
-
-	static {
-		list = new ArrayList<Integer>();
-        for(int i = 0 ; i <= 6 ; i++) {
-            list.add(i);
-        }
-	}
-
 	// ミノに魔法薬をセットする
+	/*
 	protected void setMagicItem() {
 		for (int row = 0; row < ROW; row++) {
 			for (int col = 0; col < COL; col++) {
@@ -123,8 +140,13 @@ abstract class Mino implements Cloneable{
 			}
 		}
 	}
+	*/
 
-	// ミノを表示する
+	/**
+	 * ミノを表示する
+	 * @param canvas
+	 * @param isNext
+	 */
 	protected void show(GraphicsContext canvas, boolean isNext) {
 
 		for (int row = 0; row < ROW; row++) {

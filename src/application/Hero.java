@@ -5,8 +5,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-final class Hero {
-
+/**
+ * 主人公さんクラス
+ *
+ */
+public final class Hero {
 	// 主人公さんのモーション指定
 	public static final int HERO_ACTION_MENU = 0;
 	public static final int HERO_ACTION_MAIN = 1;
@@ -19,17 +22,22 @@ final class Hero {
 	public static final int HERO_ACTION_GAMEOVER = 9;
 	public static final int HERO_ACTION_PANIC = 10;
 	public static final int HERO_ACTION_ALLDOWN = 11;
-	
-	public static final int HERO_ACTION_RIGHT = 12;
-	public static final int HERO_ACTION_LEFT = 13;
 
 	private static Hero hero = null;
+
 	private int action = HERO_ACTION_MENU;
 	private TetrisImage heroImage = new TetrisImage();
 
+	/**
+	 * コンストラクタ
+	 */
 	private Hero() {
 	}
 
+	/**
+	 * 自身のオブジェクトを返す
+	 * @return Hero
+	 */
 	public static Hero getInstance() {
 		if (hero == null) {
 			hero = new Hero();
@@ -37,12 +45,18 @@ final class Hero {
 		return hero;
 	}
 
-	// アニメの再生が終わったら真を返す
+	/**
+	 * アニメの再生が終わったら真を返す
+	 * @return true:アニメ再生終了、false:アニメ再生中
+	 */
 	public boolean animeIsEnd() {
 		return heroImage.isEnd();
 	}
 
-	// 表示させるアクションを設定
+	/**
+	 * 表示させるアクションを設定
+	 * @param action
+	 */
 	public void setAction(int action) {
 		if (this.action != action) {
 			this.heroImage.init();
@@ -50,6 +64,11 @@ final class Hero {
 		this.action = action;
 	}
 
+	/**
+	 * メッセージを描画
+	 * @param canvas
+	 * @param message
+	 */
 	private void showMessage(GraphicsContext canvas, String message) {
 		canvas.setFont(new Font("游ゴシック体", Conf.PANEL_W));
 		canvas.setTextAlign(TextAlignment.LEFT);
@@ -57,6 +76,10 @@ final class Hero {
 		canvas.fillText(message, Conf.HERO_X + (Conf.PANEL_W * 1), Conf.HERO_Y + (Conf.PANEL_H * 1));
 	}
 
+	/**
+	 * 主人公さん及び背景を描画
+	 * @param canvas
+	 */
 	public void show(GraphicsContext canvas) {
 
 		// 背景の表示
@@ -98,12 +121,6 @@ final class Hero {
 			break;
 		case HERO_ACTION_ALLDOWN: // 魔法（イオ）発動後のブロック落下中（繰り返し）
 			canvas.drawImage(heroImage.heroAnime_10(), Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
-			break;
-		case HERO_ACTION_RIGHT:
-			canvas.drawImage(TetrisImage.heroRight, Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
-			break;
-		case HERO_ACTION_LEFT:
-			canvas.drawImage(TetrisImage.heroLeft, Conf.HERO_X + (Conf.PANEL_W * 2), Conf.HERO_Y, Conf.HERO_W, Conf.HERO_H);
 			break;
 		}
 	}

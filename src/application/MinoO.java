@@ -1,7 +1,10 @@
 package application;
 
-//ミノ（■）
-class MinoO extends Mino {
+/**
+ * ミノOクラス
+ *
+ */
+public class MinoO extends Mino {
 
 	public MinoO() {
 		super();
@@ -14,13 +17,19 @@ class MinoO extends Mino {
 		this.panel = new Panel(TetrisImage.minoO);
 	}
 
-	// ミノを回転
+	/**
+	 * ミノを回転
+	 */
+	@Override
 	public void turn() {
 		return;
 	}
 
-	// 左回転
-	// [ミノの向き][補正する回数][補正内容 0:X、1:Y]
+	/**
+	 * 左回転時の補正値を定義
+	 * [ミノの向き(this.direction)][補正回][補正軸 0:X、1:Y]
+	 */
+	@Override
 	protected void initCorrectionLeft() {
 		// 正面から左回転時
 		correctionLeftArray[DIRECTION_NORMAL][0][CORRECTION_X] = 0;
@@ -60,8 +69,11 @@ class MinoO extends Mino {
 		correctionLeftArray[DIRECTION_RIGHT][3][CORRECTION_Y] = 0;
 	}
 
-	// 右回転
-	// [ミノの向き][補正する回数][補正内容 0:X、1:Y]
+	/**
+	 * 右回転時の補正値を定義
+	 * [ミノの向き(this.direction)][補正回][補正軸 0:X、1:Y]
+	 */
+	@Override
 	protected void initCorrectionRight() {
 		// 正面から右回転時
 		correctionRightArray[DIRECTION_NORMAL][0][CORRECTION_X] = 0;

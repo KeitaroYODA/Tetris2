@@ -6,8 +6,11 @@ import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-final class TetrisAudio {
-
+/**
+ * 効果音及びBGMを扱うクラス
+ *
+ */
+public final class TetrisAudio {
 	// 効果音
 	private static AudioClip correct1;
 	private static AudioClip decision26;
@@ -79,74 +82,106 @@ final class TetrisAudio {
 		switch1.setVolume(1.0);
 	}
 
-	// BGM
+	/**
+	 * コンストラクタ
+	 */
+	private TetrisAudio() {
+	}
+
+	/**
+	 * BGMを再生
+	 */
 	public static void bgm() {
 		bgm1.setRate(1.0);
 		bgm1.play();
 	}
 
-	// BGMの再生速度の変更　1.0～8.0
+	/**
+	 * BGMの再生速度の変更
+	 * @param value 再生速度(1.0～8.0)
+	 */
 	public static void setBgmRate(double value) {
 		bgm1.setRate(value);
 	}
 
-	// ゲームオーバ
+	/**
+	 * ゲームオーバ時の効果音を再生
+	 */
 	public static void gameOver() {
 		bgm1.stop();
 		sousou3.play();
 	}
 
-	// レベルアップ
+	/**
+	 * レベルアップ時の効果音を再生
+	 */
 	public static void levelUp() {
 		levelup1.play();
 	}
 
-	// スタート
+	/**
+	 * ゲーム開始時の効果音を再生
+	 */
 	public static void start() {
 		sousou3.stop();
 		menu1.play();
 	}
 
-	// ミノ接地
+	/**
+	 * ミノ接地時の効果音を再生
+	 */
 	public static void colision() {
 		switch1.play();
 	}
 
-	// ポーズ
+	/**
+	 * ポーズボタン押下時の効果音を再生
+	 * BGMの再生を一時停止
+	 */
 	public static void pause() {
 		bgm1.pause();
 		decision26.play();
 	}
 
-	// ポーズ解除
+	/**
+	 * BGMの再生を再開
+	 */
 	public static void replay() {
 		bgm1.play();
 	}
 
-	// ミノ削除
+	/**
+	 * パネルが1行揃った際の効果音を再生
+	 */
 	public static void success() {
 		correct1.play();
 	}
 
-	// ミノ回転
+	/**
+	 * ミノ回転時の効果音を再生
+	 */
 	public static void turn() {
 		puyon1.play();
 	}
 
-	// 魔法炸裂（メラ）
+	/**
+	 * 魔法（メラ）発動時の効果音を再生
+	 */
 	public static void mera() {
 		magicAudio.play();
 	}
 
-	// 魔法炸裂（イオ）
+	/**
+	 * 魔法（イオ）発動時の効果音を再生
+	 */
 	public static void io() {
 		magicelectron4.play();
 	}
 
-	// 魔法チャージ中
+	/**
+	 * 魔法チャージ中の効果音を再生
+	 */
 	public static void charge() {
 		magicCharge1.play();
 	}
-
-	private TetrisAudio() {}
 }

@@ -1,6 +1,10 @@
 package application;
 
-final class Conf {
+/**
+ * 設定定義クラス
+ *
+ */
+public final class Conf {
 	// メッセージ関連 ///////////////////////////////////////
 	// メイン画面上に表示されるメッセージ
 	public static final String MESSAGE_NONE = "";
