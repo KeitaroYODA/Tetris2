@@ -12,7 +12,7 @@ public final class Panel {
 
 	/**
 	 * コンストラクタ
-	 * @param image
+	 * @param image ミノに表示されるImageオブジェクト
 	 */
 	public Panel(WritableImage image) {
 		this.resizedImage = image;

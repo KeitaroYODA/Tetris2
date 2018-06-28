@@ -1,7 +1,5 @@
 package application;
 
-import java.io.File;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 
@@ -15,14 +13,13 @@ public final class TetrisImage{
 	private int count; // アニメ再生用カウンタ
 
 	// 画像ファイル
-	private static final Image tile_1 = new Image(new File("res/image/tile_1.png").toURI().toString());
-	private static final Image magic1 = new Image(new File("res/image/magic1.png").toURI().toString());
-	private static final Image frameeffect = new Image(new File("res/image/frameeffects006m.png").toURI().toString());
-	private static final Image hero = new Image(new File("res/image/hero.png").toURI().toString()); // 主人公さん
-	private static final Image kaenbeam = new Image(new File("res/image/kaenbeam.png").toURI().toString()); // 魔法（イオ）発動
-	private static final Image hiteffects = new Image(new File("res/image/hiteffects.png").toURI().toString());
-	private static final Image frame = new Image(new File("res/image/frame.png").toURI().toString());
-
+	private static final Image tile_1 = new Image(TetrisImage.class.getResource("/image/tile_1.png").toString());
+	private static final Image magic1 = new Image(TetrisImage.class.getResource("/image/magic1.png").toString());
+	private static final Image frameeffect = new Image(TetrisImage.class.getResource("/image/frameeffects006m.png").toString());
+	private static final Image hero = new Image(TetrisImage.class.getResource("/image/hero.png").toString()); // 主人公さん
+	private static final Image kaenbeam = new Image(TetrisImage.class.getResource("/image/kaenbeam.png").toString()); // 魔法（イオ）発動
+	private static final Image hiteffects = new Image(TetrisImage.class.getResource("/image/hiteffects.png").toString());
+	private static final Image frame = new Image(TetrisImage.class.getResource("/image/frame.png").toString());
 	// ミノ画像
 	public static final WritableImage minoZ = new WritableImage(tile_1.getPixelReader(),0, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
 	public static final WritableImage minoO = new WritableImage(tile_1.getPixelReader(),32, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
@@ -31,12 +28,10 @@ public final class TetrisImage{
 	public static final WritableImage minoL = new WritableImage(tile_1.getPixelReader(),128, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
 	public static final WritableImage minoT = new WritableImage(tile_1.getPixelReader(),160, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
 	public static final WritableImage minoI = new WritableImage(tile_1.getPixelReader(),96, 32, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 11));
-
 	// 背景画像（タイル）
 	public static final WritableImage haikei = new WritableImage(tile_1.getPixelReader(),448, 96, (int) (tile_1.getWidth() / 16), (int) (tile_1.getHeight() / 16));
 	// 主人公さんの背景
-	public static final Image haikeiHeroImg = new Image(new File("res/image/haikei_hero.jpg").toURI().toString());
-
+	public static final Image haikeiHeroImg = new Image(TetrisImage.class.getResource("/image/haikei_hero.jpg").toString());
 
 	/**
 	 * コンストラクタ
@@ -64,7 +59,7 @@ public final class TetrisImage{
 
 	/**
 	 * ゲーム領域アニメ(行のパネルが揃った際の削除)
-	 * @return
+	 * @return WritableImage
 	 */
 	public WritableImage hiteffectAnime_1() {
 		WritableImage[] resizedImage = new WritableImage[7];

@@ -55,7 +55,7 @@ public final class Hero {
 
 	/**
 	 * 表示させるアクションを設定
-	 * @param action
+	 * @param action Hero.HERO_ACTION_*
 	 */
 	public void setAction(int action) {
 		if (this.action != action) {
@@ -66,8 +66,8 @@ public final class Hero {
 
 	/**
 	 * メッセージを描画
-	 * @param canvas
-	 * @param message
+	 * @param canvas GraphicsContext2D
+	 * @param message 背景に表示するメッセージ文字列
 	 */
 	private void showMessage(GraphicsContext canvas, String message) {
 		canvas.setFont(new Font("游ゴシック体", Conf.PANEL_W));
@@ -78,7 +78,7 @@ public final class Hero {
 
 	/**
 	 * 主人公さん及び背景を描画
-	 * @param canvas
+	 * @param canvas GraphicsContext2D
 	 */
 	public void show(GraphicsContext canvas) {
 

@@ -1,7 +1,5 @@
 package application;
 
-import java.io.File;
-
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -26,57 +24,57 @@ public final class TetrisAudio {
 	private static MediaPlayer bgm1;
 
 	static {
-		Media m = new Media(new File("res/audio/bgm1.mp3").toURI().toString());
+		Media m = new Media(TetrisAudio.class.getResource("/audio/bgm1.mp3").toString());
 		bgm1 = new MediaPlayer(m);
 		bgm1.setCycleCount(Integer.MAX_VALUE);
 
 		// 音ずれ対策のため1回無音で再生。あまり関係ないかも
-		correct1 = new AudioClip(new File("res/audio/correct1.mp3").toURI().toString());
+		correct1 = new AudioClip(TetrisAudio.class.getResource("/audio/correct1.mp3").toString());
 		correct1.setVolume(0);
 		correct1.play();
 		correct1.setVolume(1.0);
 
-		decision26 = new AudioClip(new File("res/audio/decision26.mp3").toURI().toString());
+		decision26 = new AudioClip(TetrisAudio.class.getResource("/audio/decision26.mp3").toString());
 		decision26.setVolume(0);
 		decision26.play();
 		decision26.setVolume(1.0);
 
-		magicAudio = new AudioClip(new File("res/audio/magic-flame2.mp3").toURI().toString());
+		magicAudio = new AudioClip(TetrisAudio.class.getResource("/audio/magic-flame2.mp3").toString());
 		magicAudio.setVolume(0);
 		magicAudio.play();
 		magicAudio.setVolume(1.0);
 
-		magicCharge1 = new AudioClip(new File("res/audio/magic-charge1.mp3").toURI().toString());
+		magicCharge1 = new AudioClip(TetrisAudio.class.getResource("/audio/magic-charge1.mp3").toString());
 		magicCharge1.setVolume(0);
 		magicCharge1.play();
 		magicCharge1.setVolume(1.0);
 
-		magicelectron4 = new AudioClip(new File("res/audio/magic-electron4.mp3").toURI().toString());
+		magicelectron4 = new AudioClip(TetrisAudio.class.getResource("/audio/magic-electron4.mp3").toString());
 		magicelectron4.setVolume(0);
 		magicelectron4.play();
 		magicelectron4.setVolume(1.0);
 
-		menu1 = new AudioClip(new File("res/audio/menu1.mp3").toURI().toString());
+		menu1 = new AudioClip(TetrisAudio.class.getResource("/audio/menu1.mp3").toString());
 		menu1.setVolume(0);
 		menu1.play();
 		menu1.setVolume(1.0);
 
-		levelup1 = new AudioClip(new File("res/audio/trumpet1.mp3").toURI().toString());
+		levelup1 = new AudioClip(TetrisAudio.class.getResource("/audio/trumpet1.mp3").toString());
 		levelup1.setVolume(0);
 		levelup1.play();
 		levelup1.setVolume(1.0);
 
-		puyon1 = new AudioClip(new File("res/audio/puyon1.mp3").toURI().toString());
+		puyon1 = new AudioClip(TetrisAudio.class.getResource("/audio/puyon1.mp3").toString());
 		puyon1.setVolume(0);
 		puyon1.play();
 		puyon1.setVolume(1.0);
 
-		sousou3 = new AudioClip(new File("res/audio/sousou3.mp3").toURI().toString());
+		sousou3 = new AudioClip(TetrisAudio.class.getResource("/audio/sousou3.mp3").toString());
 		sousou3.setVolume(0);
 		sousou3.play();
 		sousou3.setVolume(1.0);
 
-		switch1 = new AudioClip(new File("res/audio/switch1.mp3").toURI().toString());
+		switch1 = new AudioClip(TetrisAudio.class.getResource("/audio/switch1.mp3").toString());
 		switch1.setVolume(0);
 		switch1.play();
 		switch1.setVolume(1.0);

@@ -49,7 +49,7 @@ public final class MStock {
 
 	/**
 	 * 魔法残弾を描画
-	 * @param canvas
+	 * @param canvas GraphicsContext2D
 	 */
 	public void show(GraphicsContext canvas) {
 		canvas.setFill(Color.BLACK);

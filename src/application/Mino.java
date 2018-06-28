@@ -122,30 +122,16 @@ public abstract class Mino implements Cloneable{
 
 	/**
 	 * ミノを構成するパネル情報配列を返す
-	 * @return
+	 * @return int[][] ミノの形状格納配列
 	 */
 	public int[][] getPanelArray() {
 		return this.panelArray;
 	}
 
-	// ミノに魔法薬をセットする
-	/*
-	protected void setMagicItem() {
-		for (int row = 0; row < ROW; row++) {
-			for (int col = 0; col < COL; col++) {
-				if (this.panelArray[row][col] == 1) {
-					this.panelArray[row][col] = 2;
-					return;
-				}
-			}
-		}
-	}
-	*/
-
 	/**
 	 * ミノを表示する
-	 * @param canvas
-	 * @param isNext
+	 * @param canvas GraphicsContext2D
+	 * @param isNext true:次の次のミノ(=少し暗く表示)、false:そのまま表示
 	 */
 	protected void show(GraphicsContext canvas, boolean isNext) {
 
@@ -171,46 +157,100 @@ public abstract class Mino implements Cloneable{
 		}
 	}
 
+	/**
+	 * ミノの列数を返す
+	 * @return ミノの列数
+	 */
 	public static int COL() {
 		return COL;
 	}
 
+	/**
+	 * ミノの行数を返す
+	 * @return ミノの行数
+	 */
 	public static int ROW() {
 		return ROW;
 	}
 
+	/**
+	 * ミノを構成するパネルオブジェクトを返す
+	 * @return Panel ミノを構成するパネルオブジェクト
+	 */
 	public Panel getPanel() {
 		return this.panel;
 	}
 
+	/**
+	 * ミノの現在の向きを返す
+	 * @return ミノの現在の向き
+	 * Mino.DIRECTION_NORMAL = 0
+	 * Mino.DIRECTION_RIGHT = 1
+	 * Mino.DIRECTION_REVERCE = 2
+	 * Mino.DIRECTION_LEFT = 3
+	 */
 	public int getDirection() {
 		return this.direction;
 	}
 
+	/**
+	 * ミノの向きをセットする
+	 * @param direction
+	 * Mino.DIRECTION_NORMAL = 0
+	 * Mino.DIRECTION_RIGHT = 1
+	 * Mino.DIRECTION_REVERCE = 2
+	 * Mino.DIRECTION_LEFT = 3
+	 */
 	public void setDirection(int direction) {
 		this.direction = direction;
 	}
 
+	/**
+	 * ミノの左上の位置（横軸）を返す
+	 * @return ミノの左上の位置（横軸）
+	 */
 	public int getX() {
 		return this.x;
 	}
 
+	/**
+	 * ミノの左上の位置（縦軸）を返す
+	 * @return ミノの左上の位置（縦軸）
+	 */
 	public int getY() {
 		return this.y;
 	}
 
+	/**
+	 * ミノの左上の位置（横軸）をセット
+	 * @param x ミノの左上の位置（横軸）
+	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 
+	/**
+	 * ミノの左上の位置（縦軸）をセット
+	 * @param y ミノの左上の位置（縦軸）
+	 */
 	public void setY(int y) {
 		this.y = y;
 	}
 
+	/**
+	 * 回転補正（左回転）情報配列を返す
+	 * @return int[][][] 回転補正（左回転）情報配列
+	 * [ミノの向き(this.direction)][補正回][補正軸 0:X、1:Y]
+	 */
 	public int[][][] getCorrectionLeftArray() {
 		return this.correctionLeftArray;
 	}
 
+	/**
+	 * 回転補正（右回転）情報配列を返す
+	 * @return int[][][] 回転補正（右回転）情報配列
+	 * [ミノの向き(this.direction)][補正回][補正軸 0:X、1:Y]
+	 */
 	public int[][][] getCorrectionRightArray() {
 		return this.correctionLeftArray;
 	}

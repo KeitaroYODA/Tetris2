@@ -59,7 +59,7 @@ public final class Magic {
 
 	/**
 	 * 表示させるアクションを設定
-	 * @param action
+	 * @param action MAGIC_ACTION_*
 	 */
 	public void setAction(int action) {
 		if (this.action != action) {
@@ -119,8 +119,8 @@ public final class Magic {
 
 	/**
 	 * 指定された座標が魔法陣カーソル内であるかチェック
-	 * @param x
-	 * @param y
+	 * @param x チェックする横位置
+	 * @param y チェックする縦位置
 	 * @return true:魔法陣カーソル内、false:魔法陣カーソル外
 	 */
 	public boolean inCursor(int x, int y) {
@@ -146,7 +146,7 @@ public final class Magic {
 
 	/**
 	 *  魔法効果を描画
-	 * @param canvas
+	 * @param canvas GraphicsContext2D
 	 */
 	public void show(GraphicsContext canvas) {
 		// メラ魔方陣表示用
@@ -198,7 +198,7 @@ public final class Magic {
 
 	/**
 	 * 魔法陣の行数を返す
-	 * @return
+	 * @return 魔法陣の行数
 	 */
 	public static int ROW() {
 		return ROW;
@@ -206,7 +206,7 @@ public final class Magic {
 
 	/**
 	 * 魔法陣の列数を返す
-	 * @return
+	 * @return 魔法陣の列数
 	 */
 	public static int COL() {
 		return COL;

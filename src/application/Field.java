@@ -440,7 +440,7 @@ public final class Field {
 
 	/**
 	 * 行が揃った際の消滅アニメを描画
-	 * @param canvas
+	 * @param canvas GraphicsContext2D
 	 */
 	public void showDeleteAnime(GraphicsContext canvas) {
 
@@ -472,7 +472,7 @@ public final class Field {
 
 	/**
 	 * ゲーム領域を描画
-	 * @param canvas
+	 * @param canvas GraphicsContext2D
 	 */
 	public void show(GraphicsContext canvas) {
 		// 背景及び積み上げられたパネルを描画
@@ -564,7 +564,7 @@ public final class Field {
 
 	/**
 	 * ゲーム領域の行数を返す
-	 * @return
+	 * @return ゲーム領域の行数
 	 */
 	public static int ROW() {
 		return ROW;
@@ -572,7 +572,7 @@ public final class Field {
 
 	/**
 	 * ゲーム領域の列数を返す
-	 * @return
+	 * @return ゲーム領域の列数
 	 */
 	public static int COL() {
 		return COL;
